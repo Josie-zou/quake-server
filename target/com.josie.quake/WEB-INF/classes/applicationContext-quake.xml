@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- service路径 -->
+    <context:component-scan base-package="com.josie.quake.service"/>
+
+    <!-- 线上 -->
+    <bean id="dataSource.quake" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <!-- 测试库 -->
+        <!--
+        <property name="url" value="jdbc:mysql://10.10.40.147:3306/cx?useUnicode=true&amp;characterEncoding=UTF-8" />
+         -->
+        <!-- 线上库 -->
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306/earthquake?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <bean id="quakeSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-conf.xml"/>
+        <property name="dataSource" ref="dataSource.quake"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.josie.quake.Dao"/>
+        <property name="sqlSessionFactoryBeanName" value="quakeSessionFactory"/>
+        <property name="annotationClass" value="com.josie.quake.Dao.annotation.DataSourceQuake"/>
+    </bean>
+
+    <!-- transaction support -->
+    <!-- PlatformTransactionMnager -->
+    <bean id="txManagerQuakeBase" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource.quake"/>
+    </bean>
+    <!-- enable transaction annotation support -->
+    <tx:annotation-driven transaction-manager="txManagerQuakeBase"/>
+
+</beans>
