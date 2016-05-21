@@ -12,7 +12,10 @@ public enum ErrorInfo {
 
     //没有权限
     NO_PRIVILEGE(200000, "不好意思,您没有权限操作"),
-    NO_LOGUP(200001, "该用户尚未注册");
+    NO_LOGUP(200001, "该用户尚未注册"),
+    LOGBEFORE(200002, "该用户已经被注册过"),
+
+    PASSWORD_ERROR(300000, "密码错误");
 
     private final int code;
     private final String msg;

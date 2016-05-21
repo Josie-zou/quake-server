@@ -117,4 +117,23 @@ public interface UserDao {
             @Param("phoneNumber") String phoneNumber,
             @Param("positon") String positon,
             @Param("workPlace") String workPlace);
+
+
+    @Select(""
+            + " select "
+            + COL_ALL
+            + " from "
+            + TABLE
+            + " where phone_number = #{phoneNumber} ")
+    public User getByMobile(
+            @Param("phoneNumber") String account);
+
+    @Select(""
+            + " select "
+            + COL_ALL
+            + " from "
+            + TABLE
+            + " where mail_adress = #{email} ")
+    public User getByEmail(
+            @Param("email") String account);
 }

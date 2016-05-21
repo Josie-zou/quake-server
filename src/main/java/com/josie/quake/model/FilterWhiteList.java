@@ -8,7 +8,7 @@ import java.util.Date;
 public class FilterWhiteList {
     private int id;
     private String url;
-    private int operator;
+    private int operater;
     private int status;
     private Date createTime;
 
@@ -44,12 +44,12 @@ public class FilterWhiteList {
         this.url = url;
     }
 
-    public int getOperator() {
-        return operator;
+    public int getOperater() {
+        return operater;
     }
 
-    public void setOperator(int operator) {
-        this.operator = operator;
+    public void setOperater(int operater) {
+        this.operater = operater;
     }
 
     public int getStatus() {
@@ -73,7 +73,7 @@ public class FilterWhiteList {
         return "FilterWhiteList{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
-                ", operator=" + operator +
+                ", operater=" + operater +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 '}';

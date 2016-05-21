@@ -28,4 +28,6 @@ public interface UserService {
     public void updateUser(User user);
 
     public void updateUser(Integer id, String username, String mailAdress, String phoneNumber, String positon, String workPlace);
+
+    public User getByAccount(String account);
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Created by Josie on 16/5/12.
  */
@@ -24,11 +26,18 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "login", produces = Constant.WebConstant.JSON_FORMAT)
     public String login(@RequestParam("account") String account,
-                        @RequestParam("password") String password) {
-        User user = userService.getUserByAccountAndPassword(account, password);
-        if (user == null){
+                        @RequestParam("password") String password,
+                        HttpSession session) {
+        User user = userService.getByAccount(account);
+        if (user == null) {
             return ResponseUtils.returnError(ErrorInfo.NO_LOGUP);
         }
+        user = null;
+        user = userService.getUserByAccountAndPassword(account, password);
+        if (user == null) {
+            return ResponseUtils.returnError(ErrorInfo.PASSWORD_ERROR);
+        }
+        session.setAttribute("username", user.getUsername());
         return ResponseUtils.returnOK(user);
 
     }
@@ -52,13 +61,18 @@ public class LoginController {
         user.setWorkPlace(workplace);
         user.setPositon(job);
 
-        userService.addUser(user);
+        try {
+            userService.addUser(user);
+        } catch (Exception e) {
+            return ResponseUtils.returnError(ErrorInfo.LOGBEFORE);
+        }
         return ResponseUtils.returnOK();
     }
 
-    @RequestMapping(value = "test", produces = Constant.WebConstant.JSON_FORMAT)
+    @RequestMapping(value = "logout", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String test() {
+    public String logout(HttpSession session) {
+        session.removeAttribute("username");
         return ResponseUtils.returnOK();
     }
 }

@@ -73,4 +73,15 @@ public class UserServiceImpl implements UserService {
             String workPlace) {
         userDao.update(id, username, mailAdress, phoneNumber, positon, workPlace);
     }
+
+    @Override
+    public User getByAccount(String account) {
+        if (RegexUtils.isPhoneNumber(account)) {
+            return userDao.getByMobile(account);
+        } else if (RegexUtils.isEmail(account)) {
+            return userDao.getByEmail(account);
+        }
+        return null;
+    }
+
 }
