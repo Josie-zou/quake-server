@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by Josie on 16/5/12.
  */
 @Controller
-@RequestMapping(value = "quake")
+@RequestMapping(value = "api/quake")
 public class QuakeInfoController {
 
     @Autowired

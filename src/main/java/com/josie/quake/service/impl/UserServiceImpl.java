@@ -1,6 +1,6 @@
 package com.josie.quake.service.impl;
 
-import com.josie.quake.Dao.UserDao;
+import com.josie.quake.dao.UserDao;
 import com.josie.quake.commons.utils.RegexUtils;
 import com.josie.quake.model.User;
 import com.josie.quake.service.UserService;

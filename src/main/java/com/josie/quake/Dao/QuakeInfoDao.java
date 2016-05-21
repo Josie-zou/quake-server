@@ -1,6 +1,6 @@
-package com.josie.quake.Dao;
+package com.josie.quake.dao;
 
-import com.josie.quake.Dao.annotation.DataSourceQuake;
+import com.josie.quake.dao.annotation.DataSourceQuake;
 import com.josie.quake.model.QuakeInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

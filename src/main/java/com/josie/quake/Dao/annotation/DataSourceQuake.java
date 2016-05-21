@@ -1,4 +1,4 @@
-package com.josie.quake.Dao.annotation;
+package com.josie.quake.dao.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

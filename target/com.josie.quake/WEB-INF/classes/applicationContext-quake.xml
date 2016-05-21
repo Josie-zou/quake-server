@@ -27,9 +27,9 @@
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.josie.quake.Dao"/>
+        <property name="basePackage" value="com.josie.quake.dao"/>
         <property name="sqlSessionFactoryBeanName" value="quakeSessionFactory"/>
-        <property name="annotationClass" value="com.josie.quake.Dao.annotation.DataSourceQuake"/>
+        <property name="annotationClass" value="com.josie.quake.dao.annotation.DataSourceQuake"/>
     </bean>
 
     <!-- transaction support -->

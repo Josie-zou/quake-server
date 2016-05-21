@@ -1,6 +1,7 @@
 package com.josie.quake.controller;
 
 import com.josie.quake.commons.Constant;
+import com.josie.quake.commons.utils.ErrorInfo;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.User;
 import com.josie.quake.service.UserService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by Josie on 16/5/12.
  */
 @Controller
-@RequestMapping(value = "")
+@RequestMapping(value = "api")
 public class LoginController {
 
     @Autowired
@@ -25,6 +26,9 @@ public class LoginController {
     public String login(@RequestParam("account") String account,
                         @RequestParam("password") String password) {
         User user = userService.getUserByAccountAndPassword(account, password);
+        if (user == null){
+            return ResponseUtils.returnError(ErrorInfo.NO_LOGUP);
+        }
         return ResponseUtils.returnOK(user);
 
     }

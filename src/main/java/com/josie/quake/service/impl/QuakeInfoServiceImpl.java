@@ -1,6 +1,6 @@
 package com.josie.quake.service.impl;
 
-import com.josie.quake.Dao.QuakeInfoDao;
+import com.josie.quake.dao.QuakeInfoDao;
 import com.josie.quake.model.QuakeInfo;
 import com.josie.quake.service.QuakeInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
