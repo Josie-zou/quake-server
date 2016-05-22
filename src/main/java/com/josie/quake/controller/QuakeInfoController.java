@@ -59,13 +59,21 @@ public class QuakeInfoController {
 
         User user = userService.getById(Integer.valueOf(id));
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
-            return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByDate(QuakeInfo.Status.Enable, startDate,lastDate));
+            return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByDate(QuakeInfo.Status.Enable, startDate, lastDate));
         } else {
             return ResponseUtils.returnOK(quakeInfoService.getAllByDate(startDate, lastDate));
         }
     }
 
-    public String getByType(String id){
-        return ResponseUtils.returnOK();
+    @RequestMapping(value = "getByType", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getByType(
+            @RequestParam("id") String id) {
+        User user = userService.getById(Integer.valueOf(id));
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnOK(quakeInfoService.getAllByTypeByStatus(QuakeInfo.Status.Enable));
+        } else {
+            return ResponseUtils.returnOK(quakeInfoService.getAllByType());
+        }
     }
 }

@@ -31,4 +31,9 @@ public interface QuakeInfoService {
     public List<Map<String, Object>> getAllByDate(
             Date startDate,
             Date lastDate) throws ParseException;
+
+    public List<Map<String, ? extends Object>> getAllByTypeByStatus(QuakeInfo.Status enable);
+
+    public List<Map<String, ? extends Object>> getAllByType();
+
 }

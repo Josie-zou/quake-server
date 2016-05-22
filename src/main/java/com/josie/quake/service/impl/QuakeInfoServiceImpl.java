@@ -58,6 +58,16 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
         return result;
     }
 
+    @Override
+    public List<Map<String, ? extends Object>> getAllByTypeByStatus(QuakeInfo.Status enable) {
+        return quakeInfoDao.getAllByTypeByStatus(enable.toInt());
+    }
+
+    @Override
+    public List<Map<String, ? extends Object>> getAllByType() {
+        return quakeInfoDao.getAllByType();
+    }
+
     private List<Map<String, Object>> convertResult(
             List<Map<String, Object>> result,
             Date start,
@@ -90,5 +100,6 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
 
         return newResult;
     }
+
 
 }

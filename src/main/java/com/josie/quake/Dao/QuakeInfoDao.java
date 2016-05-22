@@ -66,4 +66,22 @@ public interface QuakeInfoDao {
             @Param("status") int status,
             @Param("startDate") Date startDate,
             @Param("endDate") Date lastDate);
+
+    @Select(""
+            + " select "
+            + " count(id) as count, type "
+            + " from "
+            + TABLE
+            + " where status = #{status} "
+            + " group by type ")
+    public List<Map<String,? extends Object>> getAllByTypeByStatus(
+            @Param("status") int status);
+
+    @Select(""
+            + " select "
+            + " count(id) as count, type "
+            + " from "
+            + TABLE
+            + " group by type ")
+    public List<Map<String,? extends Object>> getAllByType();
 }
