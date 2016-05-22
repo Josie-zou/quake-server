@@ -161,7 +161,7 @@
 </div>
 
 <header class="container-fluid intro-lg bkg">
-    <%if (session.getAttribute("login") != null && session.getAttribute("login").equals("true")) {%>
+    <%if (session.getAttribute("user") != null) {%>
     <a id="logout" href="#" class="btn btn-custom animated fadeInUp" data-toggle="tooltip" data-placement="bottom"
        title="退出" style="position:absolute;top:0px;right:30px">LOGOUT</a>
     <%}%>
@@ -175,7 +175,7 @@
 
         <div class="divider divider-intro animated bounceIn"></div>
         <%%>
-        <%if (session.getAttribute("login") == null || session.getAttribute("login").equals("false")) {%>
+        <%if (session.getAttribute("user") == null) {%>
         <button type="button" id="login" class="btn btn-custom animated fadeInUp" data-toggle="tooltip"
                 data-placement="top" onclick="login()" title="登录">SIGN IN
         </button>
@@ -183,7 +183,7 @@
         <button type="button" id="register" class="btn btn-custom animated fadeInUp" data-toggle="tooltip"
                 data-placement="top" onclick="register()" title="注册">SIGN UP
         </button>
-        <%} else if (session.getAttribute("login") != null) {%>
+        <%} else if (session.getAttribute("user") != null) {%>
         <a id="lookup" href="<%=request.getContextPath()%>/showdata" class="btn btn-custom animated fadeInUp"
            data-toggle="tooltip" data-placement="bottom" title="查看">LOOK UP</a>
         <%}%>
@@ -209,12 +209,15 @@
             data: ajax_data,
             success: function (msg) {    //msg是后台调用action时，你传过来的参数
                 var jsonObj = eval(msg);
-                alert(jsonObj.data.username);
                 if (jsonObj.code == 0) {
-                    alert("login success");
+                    location.href = "<%=request.getContextPath()%>/showdata";
                 }
                 else {
-                    alert("login failed");
+                    alert(jsonObj.msg);
+                    if (jsonObj.code == 200001) {
+                        login();
+                        register();
+                    }
                 }
             }
         });
@@ -235,9 +238,11 @@
                     var jsonObj = eval(msg);
                     if (jsonObj.code == 0) {
                         alert("signup success");
+                        register();
+                        login();
                     }
                     else {
-                        alert("aignup failed");
+                        alert(jsonObj.msg);
                     }
                 }
             });
@@ -250,7 +255,7 @@
     $("#logout").click(function () {
         $.ajax({
             type: "post",
-            url: "<%=request.getContextPath()%>/LogoutServlet",
+            url: "<%=request.getContextPath()%>/api/logout",
             data: "logout",
             success: function (msg) {    //msg是后台调用action时，你传过来的参数
                 location.reload();

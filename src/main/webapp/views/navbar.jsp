@@ -18,8 +18,8 @@
                             <h4>知识库管理<span class="caret"></span></h4></a>
                         <ul class="dropdown-menu" role="menu" style="background-color: #dcecf7">
                             <li><a href="<%=request.getContextPath()%>/settings/manage-disaster.jsp">灾情获取匹配式管理</a></li>
-                            <li class="divider"></li>
-                            <li><a href="<%=request.getContextPath()%>/settings/manage-public.jsp">舆情监测匹配式管理</a></li>
+                            <%--<li class="divider"></li>--%>
+                            <%--<li><a href="<%=request.getContextPath()%>/settings/manage-public.jsp">舆情监测匹配式管理</a></li>--%>
                             <li class="divider"></li>
                             <li><a href="<%=request.getContextPath()%>/settings/manage-whitelist.jsp">白名单管理</a></li>
                         </ul>
@@ -36,14 +36,14 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <h4>用户管理<span class="caret"></span></h4></a>
                         <ul class="dropdown-menu" role="menu" style="background-color: #dcecf7">
-                            <li><a href="<%=request.getContextPath()%>/manager.jsp">修改资料</a></li>
+                            <li><a href="<%=request.getContextPath()%>/settings/setting">修改资料</a></li>
                             <li class="divider"></li>
-                            <li><a href="<%=request.getContextPath()%>/manager.jsp?password=true">修改密码</a></li>
+                            <li><a href="<%=request.getContextPath()%>/settings/setting?password=true">修改密码</a></li>
                             <li class="divider"></li>
                             <li><a href="<%=request.getContextPath()%>/settings/manage-user.jsp">用户管理</a></li>
                         </ul>
                     </li>
-                    <li><a href="<%=request.getContextPath()%>/about.jsp"><h4>关于</h4></a></li>
+                    <li><a href="<%=request.getContextPath()%>/about"><h4>关于</h4></a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <%if ( request.getServletPath().equals("/showdata.jsp") ) {%>
@@ -54,8 +54,8 @@
                     <li style="background-color: #eeeeff"><a href="<%=request.getContextPath()%>/showdata.jsp"><h4>查看数据记录</h4></a></li>
                     <%}if ( request.getServletPath().equals("/settings/manage-disaster.jsp") ) {%>
                     <li style="background-color: #eeeeff"><a href="#"><h4>灾情获取匹配式管理</h4></a></li>
-                    <%}if ( request.getServletPath().equals("/settings/manage-public.jsp") ) {%>
-                    <li style="background-color: #eeeeff"><a href="#"><h4>舆情监测匹配式管理</h4></a></li>
+                    <%--<%}if ( request.getServletPath().equals("/settings/manage-public.jsp") ) {%>--%>
+                    <%--<li style="background-color: #eeeeff"><a href="#"><h4>舆情监测匹配式管理</h4></a></li>--%>
                     <%}if ( request.getServletPath().equals("/settings/manage-whitelist.jsp") ) {%>
                     <li style="background-color: #eeeeff"><a href="#"><h4>白名单管理</h4></a></li>
                     <%}if ( request.getServletPath().equals("/settings/manage-warning.jsp") ) {%>

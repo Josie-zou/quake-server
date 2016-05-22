@@ -37,7 +37,8 @@ public class LoginController {
         if (user == null) {
             return ResponseUtils.returnError(ErrorInfo.PASSWORD_ERROR);
         }
-        session.setAttribute("username", user.getUsername());
+        session.setAttribute("user", user);
+
         return ResponseUtils.returnOK(user);
 
     }
@@ -72,7 +73,7 @@ public class LoginController {
     @RequestMapping(value = "logout", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String logout(HttpSession session) {
-        session.removeAttribute("username");
+        session.removeAttribute("user");
         return ResponseUtils.returnOK();
     }
 }
