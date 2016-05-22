@@ -1,10 +1,10 @@
 package com.josie.quake.commons.utils;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class JacksonUtils {
     private final static ObjectMapper FORMATED_MAPPER = new ObjectMapper();
 
     static {
-        FORMATED_MAPPER.configure(SerializationConfig.Feature.INDENT_OUTPUT, Boolean.TRUE);
+//        FORMATED_MAPPER.configure(SerializationConfig., Boolean.TRUE);
     }
 
     /**

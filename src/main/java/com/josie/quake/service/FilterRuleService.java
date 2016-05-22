@@ -15,7 +15,7 @@ public interface FilterRuleService {
 
     public void deletRule(int id, int operator);
 
-    public List<Object> getAll();
+    public List<FilterRule> getAll();
 
     public void update(
             Integer id,

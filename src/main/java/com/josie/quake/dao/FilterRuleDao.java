@@ -1,6 +1,7 @@
 package com.josie.quake.dao;
 
 import com.josie.quake.dao.annotation.DataSourceQuake;
+import com.josie.quake.model.FilterRule;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -40,12 +41,10 @@ public interface FilterRuleDao {
 
     @Select(""
             + " select "
-            + " user.username as username,filter_rules.* "
+            + COL_ALL
             + " from "
-            + " user,filter_rules "
-            + " where "
-            + " filter_rules.operator = user.id")
-    public List<Object> getAll();
+            + TABLE)
+    public List<FilterRule> getAll();
 
     @Update(""
             + " update "

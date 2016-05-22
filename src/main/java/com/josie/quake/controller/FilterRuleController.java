@@ -3,6 +3,8 @@ package com.josie.quake.controller;
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
 import com.josie.quake.commons.utils.ResponseUtils;
+import com.josie.quake.controller.vo.FilterRuleVo;
+import com.josie.quake.model.FilterRule;
 import com.josie.quake.model.QuakeInfo;
 import com.josie.quake.model.User;
 import com.josie.quake.service.FilterRuleService;
@@ -13,6 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Josie on 16/5/21.
@@ -56,12 +63,23 @@ public class FilterRuleController {
     @RequestMapping(value = "getAll", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getAll(
-            @RequestParam("id") String id){
+            @RequestParam("id") String id) {
         User user = userService.getById(Integer.valueOf(id));
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         }
-        return ResponseUtils.returnOK(filterRuleService.getAll());
+        List<FilterRule> filterRules = filterRuleService.getAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (int i = 0; i < filterRules.size(); i++) {
+            Map<String, Object> map = new HashMap<>();
+            FilterRule filterRule = filterRules.get(i);
+            map.put("id", filterRule.getId());
+            map.put("username", userService.getById(filterRule.getOperator()).getUsername());
+            map.put("rule", filterRule.getRule());
+            map.put("createTime", filterRule.getCreateTime());
+            result.add(map);
+        }
+        return ResponseUtils.returnOK(result);
     }
 
     @RequestMapping(value = "update", produces = Constant.WebConstant.JSON_FORMAT)

@@ -115,11 +115,11 @@
             <version>${servlet-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson-version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.codehaus.jackson</groupId>-->
+            <!--<artifactId>jackson-mapper-asl</artifactId>-->
+            <!--<version>${jackson-version}</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>com.google.collections</groupId>

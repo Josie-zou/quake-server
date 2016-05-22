@@ -30,7 +30,7 @@ public class FilterRuleServiceImpl implements FilterRuleService {
     }
 
     @Override
-    public List<Object> getAll() {
+    public List<FilterRule> getAll() {
         return filterRuleDao.getAll();
     }
 
