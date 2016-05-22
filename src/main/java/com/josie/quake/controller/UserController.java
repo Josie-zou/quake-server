@@ -51,8 +51,9 @@ public class UserController {
             @RequestParam(value = "mailAdress", required = false, defaultValue = "") String mailAdress,
             @RequestParam(value = "phoneNumber", required = false, defaultValue = "") String phoneNumber,
             @RequestParam(value = "positon", required = false, defaultValue = "") String positon,
+            @RequestParam(value = "qq", required = false, defaultValue = "") String qq,
             @RequestParam(value = "workPlace", required = false, defaultValue = "") String workPlace) {
-        userService.updateUser(Integer.valueOf(id), username, mailAdress, phoneNumber, positon, workPlace);
+        userService.updateUser(Integer.valueOf(id), username, mailAdress, qq, phoneNumber, positon, workPlace);
         return ResponseUtils.returnOK();
     }
 

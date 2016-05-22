@@ -68,10 +68,11 @@ public class UserServiceImpl implements UserService {
             Integer id,
             String username,
             String mailAdress,
+            String qq,
             String phoneNumber,
             String positon,
             String workPlace) {
-        userDao.update(id, username, mailAdress, phoneNumber, positon, workPlace);
+        userDao.update(id, username, mailAdress, qq, phoneNumber, positon, workPlace);
     }
 
     @Override

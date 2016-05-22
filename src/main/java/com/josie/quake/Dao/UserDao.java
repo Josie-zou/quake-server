@@ -106,6 +106,7 @@ public interface UserDao {
             + " username = #{username}, "
             + " phone_number = #{phoneNumber}, "
             + " mail_adress = #{mailAdress}, "
+            + " qq = #{qq}, "
             + " work_place = #{workPlace}, "
             + " positon = #{positon}, "
             + " last_update_time = now()"
@@ -114,6 +115,7 @@ public interface UserDao {
             @Param("id") Integer id,
             @Param("username") String username,
             @Param("mailAdress") String mailAdress,
+            @Param("qq") String qq,
             @Param("phoneNumber") String phoneNumber,
             @Param("positon") String positon,
             @Param("workPlace") String workPlace);
