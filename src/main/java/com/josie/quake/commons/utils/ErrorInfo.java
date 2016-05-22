@@ -8,6 +8,8 @@ public enum ErrorInfo {
     //通用错误
     ARGUMENG_ERROR(100001, "参数错误"),
     UNKNOWN_ERROR(100000, "出了点问题,我们正在处理"),
+    UNKNOWN_MAIL(100002, "不合法的邮箱地址"),
+    UNKNOWN_PHONENUMBER(100003,"不合法的手机号码"),
 
 
     //没有权限

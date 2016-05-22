@@ -3,7 +3,10 @@ package com.josie.quake.dao;
 import com.josie.quake.dao.annotation.DataSourceQuake;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * Created by Josie on 16/5/21.
@@ -34,4 +37,13 @@ public interface FilterRuleDao {
             @Param("id") int id,
             @Param("operator") int operator,
             @Param("status") int status);
+
+    @Select(""
+            + " select "
+            + " user.username as username,filter_rules.* "
+            + " from "
+            + " user,filter_rules "
+            + " where "
+            + " filter_rules.operator = user.id")
+    public List<Object> getAll();
 }

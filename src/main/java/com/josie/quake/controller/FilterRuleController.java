@@ -27,7 +27,7 @@ public class FilterRuleController {
 
     @RequestMapping(value = "addRule", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    private String addFiler(
+    public String addFiler(
             @RequestParam("id") String id,
             @RequestParam("rule") String rule) {
         User user = userService.getById(Integer.valueOf(id));
@@ -40,7 +40,7 @@ public class FilterRuleController {
 
     @RequestMapping(value = "deleteRule", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    private String deleteRule(
+    public String deleteRule(
             @RequestParam("id") String id,
             @RequestParam("operator") String operator) {
         User user = userService.getById(Integer.valueOf(id));
@@ -49,6 +49,17 @@ public class FilterRuleController {
         }
         filterRuleService.deletRule(Integer.valueOf(id), Integer.valueOf(operator));
         return ResponseUtils.returnOK();
+    }
+
+    @RequestMapping(value = "getAll", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getAll(
+            @RequestParam("id") String id){
+        User user = userService.getById(Integer.valueOf(id));
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
+        }
+        return ResponseUtils.returnOK(filterRuleService.getAll());
     }
 
 }

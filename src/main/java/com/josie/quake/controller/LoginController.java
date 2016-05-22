@@ -2,6 +2,7 @@ package com.josie.quake.controller;
 
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
+import com.josie.quake.commons.utils.RegexUtils;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.User;
 import com.josie.quake.service.UserService;
@@ -47,12 +48,18 @@ public class LoginController {
     @RequestMapping(value = "signup", produces = Constant.WebConstant.JSON_FORMAT)
     public String signup(
             @RequestParam("username") String username,
-            @RequestParam(value = "mail", required = false, defaultValue = "") String mail,
-            @RequestParam(value = "mobile", required = false, defaultValue = "") String mobile,
+            @RequestParam(value = "mail") String mail,
+            @RequestParam(value = "mobile") String mobile,
             @RequestParam(value = "password") String password,
             @RequestParam(value = "qq", required = false, defaultValue = "") String qq,
             @RequestParam(value = "workplace", required = false, defaultValue = "") String workplace,
             @RequestParam(value = "job", required = false, defaultValue = "") String job) {
+        if (!RegexUtils.isEmail(mail)) {
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_MAIL);
+        }
+        if (!RegexUtils.isPhoneNumber(mobile)) {
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_PHONENUMBER);
+        }
         User user = new User();
         user.setUsername(username);
         user.setMailAdress(mail);
