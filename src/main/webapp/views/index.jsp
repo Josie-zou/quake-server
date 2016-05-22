@@ -31,8 +31,7 @@
                         <div class="col-md-8">
                             <div class="input-group">
                                 <span class="input-group-addon">账户</span>
-                                <input type="text" class="form-control" name="username" value="" placeholder="手机号/邮箱" />
-                                <input type="hidden" name="choice" value="login" />
+                                <input type="text" class="form-control" name="account" value="" placeholder="手机号/邮箱" required/>
                             </div>
                         </div>
                     </div>
@@ -42,7 +41,7 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-addon">密码</span>
-                                <input type="password" class="form-control" name="password" value="" placeholder="登录密码" />
+                                <input type="password" class="form-control" name="password" value="" placeholder="登录密码" required/>
                             </div>
                         </div>
                         <div class="col-lg-4"></div>
@@ -74,7 +73,7 @@
                         <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-addon">名称</span>
-                                <input type="text" class="form-control" name="realname" value="" placeholder="真实姓名" />
+                                <input type="text" class="form-control" name="username" value="" placeholder="真实姓名" required/>
                             </div>
                         </div>
                     </div>
@@ -84,8 +83,7 @@
                         <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-addon">邮箱</span>
-                                <input type="text" class="form-control" name="email" value="" placeholder="邮箱" />
-                                <input type="hidden" name="choice" value="register" />
+                                <input type="text" class="form-control" name="mail" value="" placeholder="邮箱" required/>
                             </div>
                         </div>
                     </div>
@@ -95,7 +93,7 @@
                         <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-addon">手机</span>
-                                <input type="text" class="form-control" name="mobile" value="" placeholder="手机号" />
+                                <input type="text" class="form-control" name="mobile" value="" placeholder="手机号" required/>
                             </div>
                         </div>
                     </div>
@@ -105,7 +103,7 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-addon">密码</span>
-                                <input type="password" class="form-control" name="password" value="" placeholder="登录密码" />
+                                <input type="password" class="form-control" name="password" value="" placeholder="登录密码" id="password" required/>
                             </div>
                         </div>
                         <div class="col-lg-4"></div>
@@ -116,7 +114,7 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-addon">确认密码</span>
-                                <input type="password" class="form-control" name="repassword" value="" placeholder="确认密码" />
+                                <input type="password" class="form-control" name="repassword" value="" placeholder="确认密码" id="repassword" required/>
                             </div>
                         </div>
                         <div class="col-lg-4"></div>
@@ -127,7 +125,7 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-addon">QQ</span>
-                                <input type="text" class="form-control" name="qqnumber" value="" placeholder="QQ号" />
+                                <input type="text" class="form-control" name="qqnumber" value="" placeholder="QQ号" required/>
                             </div>
                         </div>
                     </div>
@@ -137,13 +135,13 @@
                         <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-addon">工作单位</span>
-                                <input type="text" class="form-control" placeholder="工作单位" name="workplace" value="" />
+                                <input type="text" class="form-control" placeholder="工作单位" name="workplace" value="" required/>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-addon">职位</span>
-                                <input type="text" class="form-control" placeholder="职位" name="position" value="" />
+                                <input type="text" class="form-control" placeholder="职位" name="position" value="" required/>
                             </div>
                         </div>
                         <div class="col-md-4"></div>
@@ -186,7 +184,7 @@
                 data-placement="top" onclick="register()" title="注册">SIGN UP
         </button>
         <%} else if (session.getAttribute("login") != null) {%>
-        <a id="lookup" href="<%=request.getContextPath()%>/showdata.jsp" class="btn btn-custom animated fadeInUp"
+        <a id="lookup" href="<%=request.getContextPath()%>/showdata" class="btn btn-custom animated fadeInUp"
            data-toggle="tooltip" data-placement="bottom" title="查看">LOOK UP</a>
         <%}%>
     </div>
@@ -201,7 +199,7 @@
     function register() {
         $("#register-div").modal("toggle");
     }
-    $(".form-submit").submit(function () {
+    $("#form-login").submit(function () {
         var ajax_url = "<%=request.getContextPath()%>/api/login";
         var ajax_type = $(this).attr('method');
         var ajax_data = $(this).serialize();
@@ -210,32 +208,43 @@
             url: ajax_url,
             data: ajax_data,
             success: function (msg) {    //msg是后台调用action时，你传过来的参数
-                if (msg == "login success") {
-                    location.reload();
-                } else if (msg == "login failed") {
-                    alert("登录失败");
-                } else if (msg == "password not equal") {
-                    alert("两次密码不一致");
-                } else if (msg == "mail is existed") {
-                    alert("该邮箱已被注册");
-                } else if (msg == "mobile is existed") {
-                    alert("该手机已被注册");
-                } else if (msg == "has null") {
-                    alert("不能有空字段")
-                } else if (msg == "input mail error") {
-                    alert("邮箱格式错误");
-                } else if (msg == "input mobile error") {
-                    alert("手机格式错误");
-                } else if (msg == "register success") {
-                    alert("注册成功");
-                    register();
-                    login();
-                } else if (msg == "userinfo is not full") {
-                    alert("用户信息不完整, 请完善信息后使用该系统");
-                    location.href = "<%=request.getContextPath()%>/manager.jsp";
+                var jsonObj = eval(msg);
+                alert(jsonObj.data.username);
+                if (jsonObj.code == 0) {
+                    alert("login success");
+                }
+                else {
+                    alert("login failed");
                 }
             }
         });
+        return false;   //阻止表单的默认提交事件
+    });
+    $("#form-register").submit(function () {
+        var password = $("#password").val();
+        var repassword = $("#repassword").val();
+        if (password == repassword) {
+            var ajax_url = "<%=request.getContextPath()%>/api/signup";
+            var ajax_type = $(this).attr('method');
+            var ajax_data = $(this).serialize();
+            $.ajax({
+                type: ajax_type,
+                url: ajax_url,
+                data: ajax_data,
+                success: function (msg) {    //msg是后台调用action时，你传过来的参数
+                    var jsonObj = eval(msg);
+                    if (jsonObj.code == 0) {
+                        alert("signup success");
+                    }
+                    else {
+                        alert("aignup failed");
+                    }
+                }
+            });
+        }
+        else {
+            alert("两次输入密码不一致");
+        }
         return false;   //阻止表单的默认提交事件
     });
     $("#logout").click(function () {
