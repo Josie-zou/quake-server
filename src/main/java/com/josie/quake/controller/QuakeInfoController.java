@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by Josie on 16/5/12.
  */
@@ -39,6 +43,23 @@ public class QuakeInfoController {
         } else {
             return ResponseUtils.returnOK(quakeInfoService.getAllByCount(Integer.valueOf(start),
                     Integer.valueOf(count)));
+        }
+    }
+
+    @RequestMapping(value = "getByDate", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getByDate(String id){
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -7);
+        Date startDate = calendar.getTime();
+        Date lastDate = new Date();
+
+        User user = userService.getById(Integer.valueOf(id));
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByDate(QuakeInfo.Status.Enable, startDate,lastDate));
+        } else {
+            return ResponseUtils.returnOK(quakeInfoService.getAllByDate(startDate, lastDate));
         }
     }
 }
