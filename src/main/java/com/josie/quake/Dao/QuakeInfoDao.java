@@ -5,7 +5,9 @@ import com.josie.quake.model.QuakeInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Josie on 16/5/12.
@@ -36,4 +38,32 @@ public interface QuakeInfoDao {
             @Param("status") int status,
             @Param("start") int start,
             @Param("count") int count);
+
+    @Select(""
+            + " select "
+            + " DATE_FORMAT(create_time, '%Y-%m-%d') as date, count(id) as count"
+            + " from "
+            + TABLE
+            + " where create_time <= #{endDate} "
+            + " and create_time >= #{startDate} "
+            + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
+            + " order by create_time")
+    public List<Map<String, Object>> getAllByDate(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date lastDate);
+
+    @Select(""
+            + " select "
+            + " DATE_FORMAT(create_time, '%Y-%m-%d') as date, count(id) as count"
+            + " from "
+            + TABLE
+            + " where status = #{status} "
+            + " and create_time <= #{endDate} "
+            + " and create_time >= #{startDate} "
+            + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
+            + " order by create_time")
+    public List<Map<String, Object>> getAllByStatusByDate(
+            @Param("status") int status,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date lastDate);
 }

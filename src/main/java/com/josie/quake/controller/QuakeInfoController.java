@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,10 +49,11 @@ public class QuakeInfoController {
 
     @RequestMapping(value = "getByDate", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String getByDate(String id){
+    public String getByDate(
+            @RequestParam("id") String id) throws ParseException {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -7);
+        calendar.add(Calendar.DATE, -15);
         Date startDate = calendar.getTime();
         Date lastDate = new Date();
 
@@ -61,5 +63,9 @@ public class QuakeInfoController {
         } else {
             return ResponseUtils.returnOK(quakeInfoService.getAllByDate(startDate, lastDate));
         }
+    }
+
+    public String getByType(String id){
+        return ResponseUtils.returnOK();
     }
 }

@@ -3,6 +3,7 @@ package com.josie.quake.service;
 import com.josie.quake.model.QuakeInfo;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +23,12 @@ public interface QuakeInfoService {
             int start,
             int count);
 
-    public Map<String, ? extends Object> getAllByStatusByDate(
+    public List<Map<String, Object>> getAllByStatusByDate(
             QuakeInfo.Status enable,
             Date startDate,
-            Date lastDate);
+            Date lastDate) throws ParseException;
 
-    public Map<String, ? extends Object> getAllByDate(
+    public List<Map<String, Object>> getAllByDate(
             Date startDate,
-            Date lastDate);
+            Date lastDate) throws ParseException;
 }
