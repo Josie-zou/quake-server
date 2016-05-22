@@ -33,4 +33,10 @@ public class FilterRuleServiceImpl implements FilterRuleService {
     public List<Object> getAll() {
         return filterRuleDao.getAll();
     }
+
+    @Override
+    public void update(Integer id, String rule, Integer operator) {
+        filterRuleDao.update(id, rule, operator);
+        return;
+    }
 }

@@ -17,4 +17,8 @@ public interface FilterRuleService {
 
     public List<Object> getAll();
 
+    public void update(
+            Integer id,
+            String rule,
+            Integer operator);
 }

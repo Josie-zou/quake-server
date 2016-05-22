@@ -51,7 +51,7 @@ public class QuakeInfoController {
     @ResponseBody
     public String getByDate(
             @RequestParam("id") String id) throws ParseException {
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -15);
         Date startDate = calendar.getTime();

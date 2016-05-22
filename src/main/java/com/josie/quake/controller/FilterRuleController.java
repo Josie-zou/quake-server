@@ -3,9 +3,11 @@ package com.josie.quake.controller;
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
 import com.josie.quake.commons.utils.ResponseUtils;
+import com.josie.quake.model.QuakeInfo;
 import com.josie.quake.model.User;
 import com.josie.quake.service.FilterRuleService;
 import com.josie.quake.service.UserService;
+import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,6 +62,20 @@ public class FilterRuleController {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         }
         return ResponseUtils.returnOK(filterRuleService.getAll());
+    }
+
+    @RequestMapping(value = "update", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String update(
+            @RequestParam("userid") String userid,
+            @RequestParam("id") String id,
+            @RequestParam("rule") String rule) {
+        User user = userService.getById(Integer.valueOf(userid));
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
+        }
+        filterRuleService.update(Integer.valueOf(id), rule, Integer.valueOf(userid));
+        return ResponseUtils.returnOK();
     }
 
 }

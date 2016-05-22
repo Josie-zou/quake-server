@@ -46,4 +46,15 @@ public interface FilterRuleDao {
             + " where "
             + " filter_rules.operator = user.id")
     public List<Object> getAll();
+
+    @Update(""
+            + " update "
+            + TABLE
+            + " set rule = #{rule}, "
+            + " operator = #{operator} "
+            + " where id = #{id} ")
+    void update(
+            @Param("id") Integer id,
+            @Param("rule") String rule,
+            @Param("operator") Integer operator);
 }
