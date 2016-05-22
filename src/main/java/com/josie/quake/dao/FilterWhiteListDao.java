@@ -1,9 +1,13 @@
 package com.josie.quake.dao;
 
 import com.josie.quake.dao.annotation.DataSourceQuake;
+import com.josie.quake.model.FilterWhiteList;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * Created by Josie on 16/5/21.
@@ -33,4 +37,11 @@ public interface FilterWhiteListDao {
             @Param("id") int id,
             @Param("operater") int operater,
             @Param("status") int status);
+
+    @Select(""
+            + " select "
+            + COL_ALL
+            + " from "
+            + TABLE)
+    public List<FilterWhiteList> getall();
 }

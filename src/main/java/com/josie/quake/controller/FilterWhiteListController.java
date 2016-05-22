@@ -2,6 +2,7 @@ package com.josie.quake.controller;
 
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
+import com.josie.quake.commons.utils.RegexUtils;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.User;
 import com.josie.quake.service.FilterWhiteListService;
@@ -38,6 +39,17 @@ public class FilterWhiteListController {
             filterWhiteListService.addWhiteList(url, user.getId());
         }
         return ResponseUtils.returnOK();
+    }
+
+    @RequestMapping(value = "getAll", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getAll(
+            @RequestParam("id") String id) {
+        User user = userService.getById(Integer.valueOf(id));
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
+        }
+        return ResponseUtils.returnOK(filterWhiteListService.getall());
     }
 
     @RequestMapping(value = "delete", produces = Constant.WebConstant.JSON_FORMAT)

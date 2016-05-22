@@ -6,6 +6,8 @@ import com.josie.quake.service.FilterWhiteListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by Josie on 16/5/21.
  */
@@ -27,5 +29,10 @@ public class FilterWhiteListServiceImpl implements FilterWhiteListService {
             int id,
             int operator) {
         filterWhiteListDao.delete(id, operator, FilterWhiteList.Status.Disable.toInt());
+    }
+
+    @Override
+    public List<FilterWhiteList> getall() {
+        return filterWhiteListDao.getall();
     }
 }
