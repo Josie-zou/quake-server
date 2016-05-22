@@ -3,7 +3,6 @@ package com.josie.quake.controller;
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
 import com.josie.quake.commons.utils.ResponseUtils;
-import com.josie.quake.controller.vo.FilterRuleVo;
 import com.josie.quake.model.FilterRule;
 import com.josie.quake.model.QuakeInfo;
 import com.josie.quake.model.User;
