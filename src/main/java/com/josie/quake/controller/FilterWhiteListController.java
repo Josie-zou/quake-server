@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +52,8 @@ public class FilterWhiteListController {
     @RequestMapping(value = "getAll", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getAll(
-            @RequestParam("id") String id) {
-        User user = userService.getById(Integer.valueOf(id));
+            HttpSession session) {
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         }
@@ -74,8 +75,8 @@ public class FilterWhiteListController {
     @ResponseBody
     public String deleteWhiteList(
             @RequestParam("id") String id,
-            @RequestParam("operator") String operator) {
-        User user = userService.getById(Integer.valueOf(operator));
+            HttpSession session) {
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {

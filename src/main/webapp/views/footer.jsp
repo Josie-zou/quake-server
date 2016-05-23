@@ -1,36 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="footer" id="footer">
-    <p align="center">——————————————————————————————————————————————————————————</p>
-    <p align="center">Design By Josie</p>
+<div>
+    <nav class="navbar navbar-default navbar-fixed-bottom" style="margin-bottom: -20;">
+        <div class="container text-center">
+            <p style="color: #000000; margin: 0;">Desgin By Josie</p>
+        </div>
+    </nav>
 </div>
 <script>
-    function footer_fun() {
-        var bodyHeight = $(document.body).height();
-        var windHeight = $(window).height();
-        var footer = $("#footer");
-        if (bodyHeight < windHeight) {
-            footer.css({
-                width: '100%',
-                height: '50px',
-                position: 'relative',
-                bottom: '0px',
-                left: '0px'
-            });
-        }
-        else {
-            footer.css({
-                width: '100%',
-                height: '50px',
-                position: 'relative',
-                bottom: '0px',
-                left: '0px'
-            });
-        }
-    }
-    $(document).ready(function() {
-        footer_fun();
-    });
-    footer_fun();
     $(function () {
         $(".unlogin").click(function () {
             document.getElementById("menu").click();

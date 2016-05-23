@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,11 +34,11 @@ public class QuakeInfoController {
     @RequestMapping(value = "getall", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getInfo(
-            @RequestParam("id") String id,
             @RequestParam("start") String start,
-            @RequestParam("count") String count) {
+            @RequestParam("count") String count,
+            HttpSession session) {
 
-        User user = userService.getById(Integer.valueOf(id));
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
                     Integer.valueOf(start), Integer.valueOf(count)));
@@ -49,15 +50,14 @@ public class QuakeInfoController {
 
     @RequestMapping(value = "getByDate", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String getByDate(
-            @RequestParam("id") String id) throws ParseException {
+    public String getByDate(HttpSession session) throws ParseException {
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, -15);
         Date startDate = calendar.getTime();
         Date lastDate = new Date();
 
-        User user = userService.getById(Integer.valueOf(id));
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByDate(QuakeInfo.Status.Enable, startDate, lastDate));
         } else {
@@ -67,9 +67,8 @@ public class QuakeInfoController {
 
     @RequestMapping(value = "getByType", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String getByType(
-            @RequestParam("id") String id) {
-        User user = userService.getById(Integer.valueOf(id));
+    public String getByType(HttpSession session) {
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnOK(quakeInfoService.getAllByTypeByStatus(QuakeInfo.Status.Enable));
         } else {

@@ -30,4 +30,40 @@ public class IndexController {
         return "about";
     }
 
+    @RequestMapping(value = "charts")
+    public String charts() {
+        return "charts";
+    }
+
+    @RequestMapping(value = "/settings/setting")
+    public String setting() {
+        return "settings/setting";
+    }
+
+    @RequestMapping(value = "/settings/disaster")
+    public String disaster() {
+        return "settings/manage-disaster";
+    }
+
+
+    @RequestMapping(value = "/settings/whitelist")
+    public String whitelist() {
+        return "settings/manage-whitelist";
+    }
+
+    @RequestMapping(value = "/settings/examine")
+    public String examine() {
+        return "settings/manage-examine";
+    }
+
+    @RequestMapping(value = "/settings/warning")
+    public String warning() {
+        return "settings/manage-warning";
+    }
+
+    @RequestMapping(value = "/settings/user")
+    public String user() {
+        return "settings/manage-user";
+    }
+
 }

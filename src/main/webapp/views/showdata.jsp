@@ -121,6 +121,9 @@
     </div>
 </div>
 <script>
+
+
+
     createTable();
     function createTable() {
         $.ajax({
@@ -138,7 +141,7 @@
                     var num = document.createElement("td");
                     num.setAttribute("class", "text-center");
                     var span_num = document.createElement("span");
-//                            span_num.setAttribute("class", "label label-success");
+
                     span_num.innerHTML = objson[i].number;
                     num.appendChild(span_num);
                     row.appendChild(num);

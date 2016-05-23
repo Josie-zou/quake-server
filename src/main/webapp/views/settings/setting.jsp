@@ -40,7 +40,8 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon">名称</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getUsername()%>" name="realname" value="<%=user.getUsername()%>" />
+                            <input type="text" class="form-control" placeholder="username" name="username" value="<%=user.getUsername()%>" required/>
+                            <input type="text" hidden name="id" value="<%=user.getId()%>" />
                         </div>
                     </div>
                     <div class="col-md-2"></div>
@@ -51,7 +52,7 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon">邮箱</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getMailAdress()%>" name="email" value="<%=user.getMailAdress()%>" />
+                            <input type="text" class="form-control" placeholder="email" name="mailAdress" value="<%=user.getMailAdress()%>" required/>
                         </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -62,7 +63,7 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon">手机</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getPhoneNumber()%>" name="mobile" value="<%=user.getPhoneNumber()%>" />
+                            <input type="text" class="form-control" placeholder="phone number" name="phoneNumber" value="<%=user.getPhoneNumber()%>" required/>
                         </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -73,7 +74,7 @@
                     <div class="col-md-4">
                         <div class="input-group">
                             <span class="input-group-addon">QQ</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getQq()%>" name="qqnumber" value="<%=user.getQq()%>" />
+                            <input type="text" class="form-control" placeholder="qq number" name="qq" value="<%=user.getQq()%>" />
                         </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -84,13 +85,13 @@
                     <div class="col-md-5">
                         <div class="input-group">
                             <span class="input-group-addon">工作单位</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getWorkPlace()%>" name="workplace" value="<%=user.getWorkPlace()%>" />
+                            <input type="text" class="form-control" placeholder="workplace" name="workPlace" value="<%=user.getWorkPlace()%>" />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="input-group">
                             <span class="input-group-addon">职位</span>
-                            <input type="text" class="form-control" placeholder="<%=user.getPositon()%>" name="position" value="<%=user.getPositon()%>" />
+                            <input type="text" class="form-control" placeholder="position" name="positon" value="<%=user.getPositon()%>" />
                         </div>
                     </div>
                     <div class="col-md-4"></div>
@@ -107,9 +108,6 @@
     <div class="col-md-2"></div>
 </div>
 <br />
-<%--<div class="row" align="center">--%>
-<%--<button type="button" class="btn btn-warning btn-lg" onclick="show()">修改密码</button>--%>
-<%--</div>--%>
 
 <div class="modal fade" id="show-div" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -125,7 +123,7 @@
                         <div class="col-md-8">
                             <div class="input-group">
                                 <span class="input-group-addon">初始密码</span>
-                                <input type="password" class="form-control" name="password" value="" />
+                                <input type="password" class="form-control" name="password" value="" required/>
                             </div>
                         </div>
                     </div>
@@ -135,7 +133,7 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-addon">新的密码</span>
-                                <input type="password" class="form-control" name="new-password" value="" />
+                                <input type="password" class="form-control" name="new-password" id="newpassword" value="" required/>
                             </div>
                         </div>
                         <div class="col-lg-4"></div>
@@ -146,7 +144,7 @@
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-addon">重复密码</span>
-                                <input type="password" class="form-control" name="re-password" value="" />
+                                <input type="password" class="form-control" name="re-password" id="repassword" value="" required/>
                             </div>
                         </div>
                         <div class="col-lg-4"></div>
@@ -175,7 +173,7 @@
         $("#show-div").modal("toggle");
     }
     $("#form-userinfo").submit(function() {
-        var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=userinfo";
+        var ajax_url = "<%=request.getContextPath()%>/api/user/update";
         var ajax_type = $(this).attr('method');
         var ajax_data = $(this).serialize();
         $.ajax({
@@ -183,47 +181,42 @@
             url: ajax_url,
             data: ajax_data,
             success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                if ( msg == "email format error" ) {
-                    alert("邮箱格式有误");
-                } else if ( msg == "mobile format error" ) {
-                    alert("手机号码格式有误");
-                } else if ( msg == "email binding" ) {
-                    alert("您已绑定邮箱,无法修改. (如需帮助请咨询管理员)");
-                } else if ( msg == "mobile binding" ) {
-                    alert("您已绑定手机号,无法修改. (如需帮助请咨询管理员)");
-                } else if ( msg == "success" ) {
-                    alert("资料修改成功");
-                    location.reload();
-                } else if ( msg == "mobile had" ) {
-                    alert("该手机号已被绑定, 请更换手机号");
-                } else if ( msg == "email had" ) {
-                    alert("该邮箱已被绑定, 请更换邮箱");
-                } else if ( msg == "userinfo not full" ) {
-                    alert("信息不完整,请完善后提交");
+                var jsonObj = eval(msg);
+                if (jsonObj.code == 0) {
+                    alert("修改成功");
+                }
+                else {
+                    alert(jsonObj.msg);
                 }
             }
         });
         return false;   //阻止表单的默认提交事件
     });
     $("#form-password").submit(function() {
-        var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=password";
-        var ajax_type = $(this).attr('method');
-        var ajax_data = $(this).serialize();
-        $.ajax({
-            type: ajax_type,
-            url: ajax_url,
-            data: ajax_data,
-            success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                if ( msg == "wrong password" ) {
-                    alert("原始密码有误");
-                } else if ( msg == "password not equal" ) {
-                    alert("两次密码不一致");
-                } else if ( msg == "success" ) {
-                    alert("密码修改成功");
-                    location.reload();
+        var password = $("#newpassword").val();
+        var repassword = $("#repassword").val();
+        if (password == repassword) {
+            var ajax_url = "<%=request.getContextPath()%>/api/user/password";
+            var ajax_type = $(this).attr('method');
+            var ajax_data = $(this).serialize();
+            $.ajax({
+                type: ajax_type,
+                url: ajax_url,
+                data: ajax_data,
+                success: function (msg) {    //msg是后台调用action时，你传过来的参数
+                    var jsonObj = eval(msg);
+                    if (jsonObj.code == 0) {
+                        alert("修改成功");
+                    }
+                    else {
+                        alert(jsonObj.msg);
+                    }
                 }
-            }
-        });
+            });
+        }
+        else {
+            alert("两次输入密码不一致");
+        }
         return false;   //阻止表单的默认提交事件
     });
     function no() {
