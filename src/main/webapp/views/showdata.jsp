@@ -1,3 +1,4 @@
+<%@ page import="com.josie.quake.model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -42,10 +43,16 @@
     <div class="col-md-10">
         <div id="filters-div">
             <div class="row">
+                <%
+                    User user = (User)session.getAttribute("user");
+                    if (user.getPrivilege() != User.Privilege.Common.toInt()) {
+                %>
                 <button type="button" class="btn btn-info" onclick="showAll()">全部</button>
-                <button type="button" class="btn btn-warning" onclick="showDis()">灾情获取</button>
-                <button type="button" class="btn btn-success" onclick="showPub()">舆情监控</button>
-                <a type="button" class="btn btn-default" href="<%=request.getContextPath()%>/settings/manage-whitelist.jsp#tips">白名单</a>
+                <button type="button" class="btn btn-success" onclick="showExamine()">已审核</button>
+                <button type="button" class="btn btn-warning" onclick="showUnexamine()">未审核</button>
+                <%
+                    }
+                %>
             </div>
             <br />
             <div class="row">
@@ -53,14 +60,14 @@
                     <thead>
                     <tr>
                         <th class="text-center" width="50px">序号</th>
-                        <th class="text-center" width="60px">来源</th>
-                        <th class="text-center" width="110px">获取时间</th>
-                        <th class="text-center" width="110px">发布时间</th>
-                        <th class="text-center" width="320px">标题</th>
-                        <th class="text-center" width="170px">关键字</th>
-                        <th class="text-center" width="80px">状态</th>
-                        <th class="text-center" width="100px">审核人</th>
-                        <th class="text-center" width="110px">审核时间</th>
+                        <th class="text-center" width="50px">来源</th>
+                        <th class="text-center" width="100px">获取时间</th>
+                        <th class="text-center" width="100px">发布时间</th>
+                        <th class="text-center" width="280px">标题</th>
+                        <th class="text-center" width="140px">关键字</th>
+                        <th class="text-center" width="60px">状态</th>
+                        <th class="text-center" width="90px">审核人</th>
+                        <th class="text-center" width="100px">审核时间</th>
                         <th class="text-center" width="80px">设置</th>
                     </tr>
                     </thead>
@@ -90,10 +97,10 @@
     <div class="col-md-1"></div>
 </div>
 <script>
-    var nowPage = 0;
+    var nowPage = 0, param = 0;
     var flag = false;
     function getPage(start) {
-        var link = "<%=request.getContextPath()%>/api/quake/getall?count=10&start=";
+        var link = "<%=request.getContextPath()%>/api/quake/getall?count=10&status="+param+"&start=";
         if (start == -1) {
             if (nowPage == 0) {
                 nowPage = 0;
@@ -216,54 +223,17 @@
     }
 </script>
 <script>
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-    function show(value) {
-        $.ajax({
-            type: "get",
-            url: "<%=request.getContextPath()%>/SettingServlet?operate=spiderinfo",
-            data: "id=" + value,
-            dataType: "json",
-            success: function (msg) {    //msg是后台调用action时，你传过来的参数
-                var objson = eval(msg);
-
-                if ( objson.source != null ) {
-                    $("#filter-iframe").attr("hidden","");
-                    $("#filter-source").removeAttr("hidden");
-                    $("#filter-source").html(objson.source);
-                }
-                else {
-                    $("#filter-source").attr("hidden", "");
-                    $("#filter-iframe").removeAttr("hidden");
-                    $("#filter-iframe").attr("src", objson.url);
-                }
-
-                if (objson.type == "disaster") {
-                    $("#filter-type").html("信息类型: 灾情获取");
-                    $("#filter-patten").remove();
-                    $("#filter-unexist").remove();
-                    $("#filter-rule").attr("title", objson.rule);
-                } else if (objson.type == "public") {
-                    $("#filter-type").html("信息类型: 舆情监测");
-                    $("#filter-rule").attr("title", objson.name);
-                    $("#filter-patten").attr("title", objson.matcher);
-                    $("#filter-unexist").attr("title", objson.unexist);
-                }
-                $("#show-div").modal("toggle");
-            }
-        });
-    }
     function showAll() {
-        $("tr[status]").attr("style", "display:");
+        param = 0;
+        getPage(0)
     }
-    function showDis() {
-        $("tr[status='0']").attr("style", "display:");
-        $("tr[status='1']").attr("style", "display:none");
+    function showExamine() {
+        param = 1;
+        getPage(0)
     }
-    function showPub() {
-        $("tr[status='1']").attr("style", "display:");
-        $("tr[status='0']").attr("style", "display:none");
+    function showUnexamine() {
+        param = 2;
+        getPage(0);
     }
 </script>
 <script src="<%=request.getContextPath()%>/resource/js/menu.js"></script>

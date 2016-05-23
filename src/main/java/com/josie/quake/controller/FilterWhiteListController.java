@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +39,15 @@ public class FilterWhiteListController {
     @RequestMapping(value = "add", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String addWhiteList(
-            @RequestParam("url") String url,
-            @RequestParam("operator") String operator) {
-        User user = userService.getById(Integer.valueOf(operator));
+            @RequestParam("url") String[] urls,
+            HttpSession session) {
+        User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {
-            filterWhiteListService.addWhiteList(url, user.getId());
+            for (String url : urls) {
+                filterWhiteListService.addWhiteList(url, user.getId());
+            }
         }
         return ResponseUtils.returnOK();
     }
@@ -59,13 +62,14 @@ public class FilterWhiteListController {
         }
         List<FilterWhiteList> filterWhiteLists = filterWhiteListService.getall();
         List<Map<String, Object>> result = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (int i = 0; i < filterWhiteLists.size(); i++) {
             Map<String, Object> map = new HashMap<>();
             FilterWhiteList filterWhiteList = filterWhiteLists.get(i);
             map.put("id", filterWhiteList.getId());
             map.put("username", userService.getById(filterWhiteList.getOperater()).getUsername());
             map.put("url", filterWhiteList.getUrl());
-            map.put("createTime", filterWhiteList.getCreateTime());
+            map.put("createTime", format.format(filterWhiteList.getCreateTime()));
             result.add(map);
         }
         return ResponseUtils.returnOK(result);

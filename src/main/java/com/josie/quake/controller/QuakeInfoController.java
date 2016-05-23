@@ -1,5 +1,6 @@
 package com.josie.quake.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.QuakeInfo;
@@ -33,6 +34,7 @@ public class QuakeInfoController {
     @RequestMapping(value = "getall", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getInfo(
+            @RequestParam("status") String status,
             @RequestParam("start") String start,
             @RequestParam("count") String count,
             HttpSession session) {
@@ -43,8 +45,18 @@ public class QuakeInfoController {
             quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
                     Integer.valueOf(start), Integer.valueOf(count));
         } else {
-            quakeInfos = quakeInfoService.getAllByCount(Integer.valueOf(start),
-                    Integer.valueOf(count));
+            if (StringUtils.equalsIgnoreCase(status, "1") ) {
+                quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
+                        Integer.valueOf(start), Integer.valueOf(count));
+            }
+            else if (StringUtils.equalsIgnoreCase(status, "2")) {
+                quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.UNVERIFY,
+                        Integer.valueOf(start), Integer.valueOf(count));
+            }
+            else {
+                quakeInfos = quakeInfoService.getAllByCount(Integer.valueOf(start),
+                        Integer.valueOf(count));
+            }
         }
         List<Map<String, Object>> result = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

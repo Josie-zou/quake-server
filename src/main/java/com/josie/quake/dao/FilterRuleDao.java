@@ -43,7 +43,8 @@ public interface FilterRuleDao {
             + " select "
             + COL_ALL
             + " from "
-            + TABLE)
+            + TABLE
+            + " WHERE status = 1")
     public List<FilterRule> getAll();
 
     @Update(""

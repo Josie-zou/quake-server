@@ -34,7 +34,7 @@
                                     <div class="col-lg-12">
                                         <div class="input-group">
                                             <span class="input-group-addon">匹配规则</span>
-                                            <input type="text" class="form-control" placeholder="乌恰*地震*人死亡" name="filter" value="" />
+                                            <input type="text" class="form-control" placeholder="乌恰*地震*人死亡" name="rule" value="" />
                                         </div>
                                     </div>
                                     <br /><br />
@@ -72,8 +72,8 @@
                     <table class="table table-striped table-bordered table-hover" id="filters-table" style="table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th class="text-center" width="70px">创建人</th>
-                                <th class="text-center">创建时间</th>
+                                <th class="text-center" width="120px">创建人</th>
+                                <th class="text-center" width="200">创建时间</th>
                                 <th class="text-center">规则</th>
                                 <th class="text-center" width="140px">设置</th>
                             </tr>
@@ -97,8 +97,8 @@
                                 <div class="col-lg-12">
                                     <div class="input-group">
                                         <span class="input-group-addon">匹配规则</span>
-                                        <input type="text" id="modifyName" class="form-control" name="filter-name" value="" />
-                                        <input hidden="hidden" name="filter-id" value="" id="modifyID" />
+                                        <input type="text" id="modifyName" class="form-control" name="rule" value="" />
+                                        <input hidden="hidden" name="id" value="" id="modifyID" />
                                     </div>
                                 </div>
                             </div>
@@ -136,14 +136,16 @@
             {
                 $.ajax({
                     type: "get",
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=delete&type=disaster",
-                    data: "filter_id="+val,
+                    url: "<%=request.getContextPath()%>/api/filter/deleteRule",
+                    data: "id="+val,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
-                        } else {
-                            var filterChild=document.getElementById(val);
-                            document.getElementById("filters-tbody").removeChild(filterChild);
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            alert("删除成功");
+                            location.reload();
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });
@@ -153,56 +155,62 @@
             createTable();
             function createTable() {
                 $.ajax({
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=table&type=disaster",
+                    url: "<%=request.getContextPath()%>/api/filter/getAll",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        var objson = eval(data);
-                        for ( var i = 0; i < objson.length; i ++ ) {
-                            var row = document.createElement("tr");
-                            row.setAttribute("id", objson[i].id);
-                            row.setAttribute("class", "text-info");
-                            var col0 = document.createElement("td");
-                            col0.setAttribute("valign", "middle");
-                            col0.setAttribute("class", "text-center");
-                            var span0 = document.createElement("span");
-                            span0.setAttribute("class", "label label-default");
-                            span0.innerHTML = objson[i].submiter;
-                            col0.appendChild(span0);
-                            row.appendChild(col0);
-                            var col1 = document.createElement("th");
-                            col1.setAttribute("class", "text-center");
-                            col1.appendChild(document.createTextNode(objson[i].create_time));
-                            row.appendChild(col1);
-                            var col2 = document.createElement("th");
-                            col2.setAttribute("class", "text-center");
-                            col2.setAttribute("name", "name");
-                            col2.appendChild(document.createTextNode(objson[i].rule));
-                            row.appendChild(col2);
+                        var jsonObj = eval(data);
+                        if (jsonObj.code == 0) {
+                            var objson = jsonObj.data;
+                            for (var i = 0; i < objson.length; i++) {
+                                var row = document.createElement("tr");
+                                row.setAttribute("id", objson[i].id);
+                                row.setAttribute("class", "text-info");
+                                var col0 = document.createElement("td");
+                                col0.setAttribute("valign", "middle");
+                                col0.setAttribute("class", "text-center");
+                                var span0 = document.createElement("span");
+                                span0.setAttribute("class", "label label-default");
+                                span0.innerHTML = objson[i].username;
+                                col0.appendChild(span0);
+                                row.appendChild(col0);
+                                var col1 = document.createElement("th");
+                                col1.setAttribute("class", "text-center");
+                                col1.appendChild(document.createTextNode(objson[i].createTime));
+                                row.appendChild(col1);
+                                var col2 = document.createElement("th");
+                                col2.setAttribute("class", "text-center");
+                                col2.setAttribute("name", "name");
+                                col2.appendChild(document.createTextNode(objson[i].rule));
+                                row.appendChild(col2);
 
-                            var col5 = document.createElement("th");
-                            col5.setAttribute("class", "text-center");
-                            var button = document.createElement("button");
-                            button.setAttribute("class", "btn btn-warning");
-                            button.setAttribute("value", objson[i].id);
-                            button.setAttribute("name", "filter");
-                            button.setAttribute("onClick", "modify(this.value)");
-                            button.innerHTML = "修改";
+                                var col5 = document.createElement("th");
+                                col5.setAttribute("class", "text-center");
+                                var button = document.createElement("button");
+                                button.setAttribute("class", "btn btn-warning");
+                                button.setAttribute("value", objson[i].id);
+                                button.setAttribute("name", "filter");
+                                button.setAttribute("onClick", "modify(this.value)");
+                                button.innerHTML = "修改";
 
-                            var button2 = document.createElement("button");
-                            button2.setAttribute("class", "btn btn-danger");
-                            button2.setAttribute("value", objson[i].id);
-                            button2.setAttribute("name", "filter");
-                            button2.setAttribute("onClick", "del(this.value)");
-                            button2.innerHTML = "删除";
+                                var button2 = document.createElement("button");
+                                button2.setAttribute("class", "btn btn-danger");
+                                button2.setAttribute("value", objson[i].id);
+                                button2.setAttribute("name", "filter");
+                                button2.setAttribute("onClick", "del(this.value)");
+                                button2.innerHTML = "删除";
 
-                            var text = document.createTextNode(" ");
-                            col5.appendChild(button);
-                            col5.appendChild(text);
-                            col5.appendChild(button2);
-                            row.appendChild(col5);
+                                var text = document.createTextNode(" ");
+                                col5.appendChild(button);
+                                col5.appendChild(text);
+                                col5.appendChild(button2);
+                                row.appendChild(col5);
 
-                            document.getElementById("filters-tbody").appendChild(row);
+                                document.getElementById("filters-tbody").appendChild(row);
+                            }
+                        }
+                        else{
+                            alert(jsonObj.msg);
                         }
                     }
                 });
@@ -222,7 +230,7 @@
                 $("#modifyRule").modal("toggle");
             }
             $("#modifyForm").submit(function() {
-                var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=modify&type=disaster";
+                var ajax_url = "<%=request.getContextPath()%>/api/filter/update";
                 var ajax_type = $(this).attr('method');
                 var ajax_data = $(this).serialize();
                 $.ajax({
@@ -230,19 +238,19 @@
                     url: ajax_url,
                     data: ajax_data,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "wrong" ) {
-                            alert("修改失败");
-                        } else if ( msg == "ok" ) {
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
                             alert("修改成功");
-                        } else if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
+                            location.reload();
                         }
-                        location.reload();
+                        else {
+                            alert(jsonObj.msg);
+                        }
                     }
                 });
             });
             $("#form-addfilter").submit(function() {
-                var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=addfilter&type=disaster";
+                var ajax_url = "<%=request.getContextPath()%>/api/filter/addRule";
                 var ajax_type = $(this).attr('method');
                 var ajax_data = $(this).serialize();
                 $.ajax({
@@ -250,10 +258,13 @@
                     url: ajax_url,
                     data: ajax_data,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
-                        } else {
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            alert("添加成功");
                             location.reload();
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });

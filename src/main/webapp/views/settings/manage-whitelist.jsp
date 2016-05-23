@@ -34,7 +34,7 @@
                                     <div class="col-lg-12">
                                         <div class="input-group">
                                             <span class="input-group-addon">白名单条目</span>
-                                            <input type="text" class="form-control" placeholder="http://www.baidu.com" name="whitelist" value="" />
+                                            <input type="text" class="form-control" placeholder="http://www.baidu.com" name="url" value="" />
                                         </div>
                                     </div>
                                     <br /><br />
@@ -73,7 +73,7 @@
                     <table class="table table-striped table-bordered table-hover" id="filters-table" style="table-layout: fixed;">
                         <thead>
                         <tr>
-                            <th class="text-center" width="70px">创建人</th>
+                            <th class="text-center" width="120px">创建人</th>
                             <th class="text-center" width="200px">创建时间</th>
                             <th class="text-center">地址</th>
                             <th class="text-center" width="80px">设置</th>
@@ -88,11 +88,12 @@
         <script>
             $(function() {
                 $("[name='addfilter']").click(function() {
-                    var filterinfo = document.getElementById('filterinfo');
-                    var filter = filterinfo.lastElementChild;
-                    var f = filter.cloneNode(true);
-                    f.setAttribute('count',parseInt(f.getAttribute('count'))+1);
-                    filterinfo.appendChild(f);
+                    var f = $("#filterinfo").children(":first");
+                    f.find("input").attr("value", "");
+                    alert(f.html());
+//                    f.attr("count", parseInt(f.attr("count"))+1);
+//                    f.find("input").attr("value", "");
+                    $("#filterinfo").append(f.html());
                 });
             });
             $(function() {
@@ -110,14 +111,16 @@
             {
                 $.ajax({
                     type: "get",
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=delete&type=whitelist",
-                    data: "filter_id="+val,
+                    url: "<%=request.getContextPath()%>/api/whitelist/delete",
+                    data: "id="+val,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
-                        } else {
-                            var filterChild=document.getElementById(val);
-                            document.getElementById("filters-tbody").removeChild(filterChild);
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            alert("删除成功");
+                            location.reload();
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });
@@ -127,43 +130,49 @@
             createTable();
             function createTable() {
                 $.ajax({
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=table&type=whitelist",
+                    url: "<%=request.getContextPath()%>/api/whitelist/getAll",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        var objson = eval(data);
-                        for ( var i = 0; i < objson.length; i ++ ) {
-                            var row = document.createElement("tr");
-                            row.setAttribute("id", objson[i].id);
-                            row.setAttribute("class", "text-info");
-                            var col0 = document.createElement("td");
-                            col0.setAttribute("valign", "middle");
-                            col0.setAttribute("class", "text-center");
-                            var span0 = document.createElement("span");
-                            span0.setAttribute("class", "label label-default");
-                            span0.innerHTML = objson[i].submiter;
-                            col0.appendChild(span0);
-                            row.appendChild(col0);
-                            var col1 = document.createElement("th");
-                            col1.setAttribute("class", "text-center");
-                            col1.appendChild(document.createTextNode(objson[i].create_time));
-                            row.appendChild(col1);
-                            var col2 = document.createElement("th");
-                            col2.setAttribute("class", "text-center");
-                            col2.setAttribute("style", "overflow-x:hidden;");
-                            col2.appendChild(document.createTextNode(objson[i].url));
-                            row.appendChild(col2);
-                            var col3 = document.createElement("th");
-                            col3.setAttribute("class", "text-center");
-                            var button = document.createElement("button");
-                            button.setAttribute("class", "btn btn-danger");
-                            button.setAttribute("value", objson[i].id);
-                            button.setAttribute("name", "filter");
-                            button.setAttribute("onClick", "del(this.value)");
-                            button.innerHTML = "删除";
-                            col3.appendChild(button);
-                            row.appendChild(col3);
-                            document.getElementById("filters-tbody").appendChild(row);
+                        var jsonObj = eval(data);
+                        if (jsonObj.code == 0) {
+                            var objson = jsonObj.data;
+                            for (var i = 0; i < objson.length; i++) {
+                                var row = document.createElement("tr");
+                                row.setAttribute("id", objson[i].id);
+                                row.setAttribute("class", "text-info");
+                                var col0 = document.createElement("td");
+                                col0.setAttribute("valign", "middle");
+                                col0.setAttribute("class", "text-center");
+                                var span0 = document.createElement("span");
+                                span0.setAttribute("class", "label label-default");
+                                span0.innerHTML = objson[i].username;
+                                col0.appendChild(span0);
+                                row.appendChild(col0);
+                                var col1 = document.createElement("th");
+                                col1.setAttribute("class", "text-center");
+                                col1.appendChild(document.createTextNode(objson[i].createTime));
+                                row.appendChild(col1);
+                                var col2 = document.createElement("th");
+                                col2.setAttribute("class", "text-center");
+                                col2.setAttribute("style", "overflow-x:hidden;");
+                                col2.appendChild(document.createTextNode(objson[i].url));
+                                row.appendChild(col2);
+                                var col3 = document.createElement("th");
+                                col3.setAttribute("class", "text-center");
+                                var button = document.createElement("button");
+                                button.setAttribute("class", "btn btn-danger");
+                                button.setAttribute("value", objson[i].id);
+                                button.setAttribute("name", "filter");
+                                button.setAttribute("onClick", "del(this.value)");
+                                button.innerHTML = "删除";
+                                col3.appendChild(button);
+                                row.appendChild(col3);
+                                document.getElementById("filters-tbody").appendChild(row);
+                            }
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });
@@ -171,7 +180,7 @@
         </script>
         <script>
             $("#form-addfilter").submit(function() {
-                var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=addfilter&type=whitelist";
+                var ajax_url = "<%=request.getContextPath()%>/api/whitelist/add";
                 var ajax_type = $(this).attr('method');
                 var ajax_data = $(this).serialize();
                 $.ajax({
@@ -179,10 +188,13 @@
                     url: ajax_url,
                     data: ajax_data,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
-                        } else {
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            alert("添加成功");
                             location.reload();
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });

@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div>
-    <nav class="navbar navbar-default navbar-fixed-bottom" style="margin-bottom: -20;">
+    <nav class="navbar navbar-default navbar-fixed-bottom" style="margin-bottom: -20; background-color: #7D9EC0;">
         <div class="container text-center">
-            <p style="color: #000000; margin: 0;">Desgin By Josie</p>
+            <p style="color: #ffffff; margin: 0;">Desgin By Josie</p>
         </div>
     </nav>
 </div>
