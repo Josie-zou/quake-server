@@ -56,8 +56,8 @@
                         <th class="text-center" width="60px">来源</th>
                         <th class="text-center" width="110px">获取时间</th>
                         <th class="text-center" width="110px">发布时间</th>
-                        <th class="text-center" width="170px">标题</th>
-                        <th class="text-center" width="320px">摘要</th>
+                        <th class="text-center" width="320px">标题</th>
+                        <th class="text-center" width="170px">关键字</th>
                         <th class="text-center" width="80px">状态</th>
                         <th class="text-center" width="100px">审核人</th>
                         <th class="text-center" width="110px">审核时间</th>
@@ -67,152 +67,152 @@
                     <tbody id="filters-tbody"></tbody>
                 </table>
             </div>
+            <div class="text-center">
+                <nav>
+                    <ul class="pagination">
+                        <li id="pagePre">
+                            <a href="#" aria-label="Previous" onclick="getPage(-1)">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="active"><a href="#" id="pageNum">1</a></li>
+                        <li id="pageNext">
+                            <a href="#" aria-label="Next" onclick="getPage(1)">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <br/><br/><br/>
         </div>
     </div>
     <div class="col-md-1"></div>
 </div>
-<div class="modal fade" id="show-div" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                        class="sr-only">Close</span></button>
-                <h4>详细信息</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="alert alert-info alert-dismissible" role="alert">
-                            <h3 align="center">源文件信息<a class="anchorjs-link" href="#"><span
-                                    class="anchorjs-icon"></span></a></h3>
-                            <br/>
-
-                            <div class="row">
-                                <%--<div class="col-lg-2"></div>--%>
-                                <div class="col-lg-12" align="center">
-                                    <p id="filter-source" hidden></p>
-                                    <iframe width="100%" height="100%" src="" id="filter-iframe" hidden></iframe>
-                                </div>
-                                <%--<div class="col-lg-2"></div>--%>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <button type="button" class="btn btn-info" id="filter-type"></button>
-                    </div>
-                    <div id="filter-rule-div" class="col-lg-9" align="right">
-                        <button id="filter-rule" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                data-placement="bottom" title="">规则
-                        </button>
-                        <button id="filter-patten" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                data-placement="bottom" title="">正则
-                        </button>
-                        <button id="filter-unexist" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                data-placement="bottom" title="">不含关键字
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
+    var nowPage = 0;
+    var flag = false;
+    function getPage(start) {
+        var link = "<%=request.getContextPath()%>/api/quake/getall?count=10&start=";
+        if (start == -1) {
+            if (nowPage == 0) {
+                nowPage = 0;
+                return;
+            }
+            else {
+                nowPage --;
+            }
+        }
+        else if (start == 1) {
+            if (flag) {
+                return;
+            }
+            nowPage++;
+        }
+        else if (start == 0) {
+            nowPage = 0;
+        }
+        if (nowPage == 0) {
+            $("#pagePre").attr("class", "disabled");
+        }
+        else {
+            $("#pagePre").removeAttr("class");
+        }
 
-
-
-    createTable();
-    function createTable() {
+        $("#pageNum").text(nowPage+1);
         $.ajax({
-            url: "<%=request.getContextPath()%>/SettingServlet?operate=showdata",
+            url: link + (nowPage*10),
             type: "GET",
             dataType: "json",
-            success: function (data) {
-                var objson = eval(data);
-                for (var i = 0; i < objson.length; i++) {
-                    var row = document.createElement("tr");
-                    row.setAttribute("id", objson[i].id);
-                    row.setAttribute("class", "text-info");
-                    row.setAttribute("status", objson[i].type);
-
-                    var num = document.createElement("td");
-                    num.setAttribute("class", "text-center");
-                    var span_num = document.createElement("span");
-
-                    span_num.innerHTML = objson[i].number;
-                    num.appendChild(span_num);
-                    row.appendChild(num);
-
-                    var col0 = document.createElement("td");
-                    col0.setAttribute("class", "text-center");
-                    var span0 = document.createElement("span");
-                    span0.setAttribute("class", "label label-default");
-                    span0.innerHTML = objson[i].origin;
-                    col0.appendChild(span0);
-                    row.appendChild(col0);
-
-                    var crawldate = document.createElement("th");
-                    crawldate.setAttribute("class", "text-center");
-                    crawldate.appendChild(document.createTextNode(objson[i].crawldate));
-                    row.appendChild(crawldate);
-                    var pagedate = document.createElement("th");
-                    pagedate.setAttribute("class", "text-center");
-                    pagedate.appendChild(document.createTextNode(objson[i].pagedate));
-                    row.appendChild(pagedate);
-
-                    var title = document.createElement("th");
-                    title.setAttribute("class", "text-center");
-                    title.setAttribute("style", "overflow-x:hidden;");
-                    title.appendChild(document.createTextNode(objson[i].title));
-                    row.appendChild(title);
-                    var source = document.createElement("th");
-                    source.setAttribute("class", "text-center");
-                    var ele = document.createElement("p");
-                    ele.innerHTML = objson[i].source;
-                    source.appendChild(ele);
-                    row.appendChild(source);
-
-                    var status = document.createElement("th");
-                    status.setAttribute("class", "text-center");
-                    var span_status = document.createElement("span");
-                    span_status.setAttribute("class", "label label-info");
-                    span_status.innerHTML = objson[i].status;
-                    status.appendChild(span_status);
-                    row.appendChild(status);
-
-                    var examiner = document.createElement("th");
-                    examiner.setAttribute("class", "text-center");
-                    examiner.appendChild(document.createTextNode(objson[i].examiner));
-                    row.appendChild(examiner);
-
-                    var examine_date = document.createElement("th");
-                    examine_date.setAttribute("class", "text-center");
-                    examine_date.appendChild(document.createTextNode(objson[i].examinedate));
-                    row.appendChild(examine_date);
-
-                    var check = document.createElement("th");
-                    check.setAttribute("class", "text-center");
-//                            var button1 = document.createElement("button");
-//                            button1.setAttribute("class", "btn btn-success");
-//                            button1.setAttribute("type", "button");
-//                            button1.setAttribute("value", objson[i].id);
-//                            button1.setAttribute("onclick", "show(this.value)");
-//                            button1.innerHTML = "查看";
-//                            col4.appendChild(button1);
-                    var button1 = document.createElement("a");
-                    button1.setAttribute("class", "btn btn-success");
-                    button1.setAttribute("target", "_blank");
-                    button1.setAttribute("href", objson[i].url);
-                    button1.innerHTML = "查看";
-                    check.appendChild(button1);
-                    row.appendChild(check);
-                    document.getElementById("filters-tbody").appendChild(row);
+            success: function(data) {
+                var jsonObj = eval(data);
+                if (jsonObj.code == 0) {
+                    if (jsonObj.data.length != 10) {
+                        $("#pageNext").attr("class", "disabled");
+                        flag = true;
+                    }
+                    else {
+                        $("#pageNext").removeAttr("class");
+                        flag = false;
+                    }
+                    createTable(jsonObj.data);
+                }
+                else {
+                    alert(jsonObj.msg);
                 }
             }
         });
+    }
+    getPage(0);
+
+    function createTable(data) {
+        document.getElementById("filters-tbody").innerHTML = "";
+        for (var i = 0; i < data.length; i ++) {
+            var row = document.createElement("tr");
+            row.setAttribute("class", "text-info");
+            var num = document.createElement("td");
+            num.setAttribute("class", "text-center");
+            num.innerHTML = data[i].id;
+            row.appendChild(num);
+
+            var type = document.createElement("td");
+            type.setAttribute("class", "text-center");
+            var span = document.createElement("span");
+            span.setAttribute("class", "label label-default");
+            span.innerHTML = data[i].type;
+            type.appendChild(span);
+            row.appendChild(type);
+
+            var createTime = document.createElement("th");
+            createTime.setAttribute("class", "text-center");
+            createTime.innerHTML = data[i].createTime;
+            row.appendChild(createTime);
+
+            var pageTime = document.createElement("th");
+            pageTime.setAttribute("class", "text-center");
+            pageTime.innerHTML = data[i].publishTime;
+            row.appendChild(pageTime);
+
+            var title = document.createElement("th");
+            title.setAttribute("class", "text-center");
+            title.setAttribute("style", "overflow-x:hidden;");
+            title.appendChild(document.createTextNode(data[i].title));
+            row.appendChild(title);
+
+            var desc = document.createElement("th");
+            desc.setAttribute("class", "text-center");
+            desc.innerHTML = data[i].description;
+            row.appendChild(desc);
+
+            var status = document.createElement("th");
+            status.setAttribute("class", "text-center");
+            var span_status = document.createElement("span");
+            span_status.setAttribute("class", "label label-info");
+            span_status.innerHTML = data[i].status;
+            status.appendChild(span_status);
+            row.appendChild(status);
+
+            var examiner = document.createElement("th");
+            examiner.setAttribute("class", "text-center");
+            examiner.innerHTML = data[i].manager;
+            row.appendChild(examiner);
+
+            var examine_date = document.createElement("th");
+            examine_date.setAttribute("class", "text-center");
+            examine_date.innerHTML = data[i].verifyTime;
+            row.appendChild(examine_date);
+
+            var check = document.createElement("th");
+            check.setAttribute("class", "text-center");
+            var button = document.createElement("a");
+            button.setAttribute("class", "btn btn-success");
+            button.setAttribute("target", "_blank");
+            button.setAttribute("href", data[i].jumpTo);
+            button.innerHTML = "查看";
+            check.appendChild(button);
+            row.appendChild(check);
+            document.getElementById("filters-tbody").appendChild(row);
+        }
     }
 </script>
 <script>

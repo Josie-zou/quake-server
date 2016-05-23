@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by Josie on 16/5/12.
@@ -39,13 +38,42 @@ public class QuakeInfoController {
             HttpSession session) {
 
         User user = (User)session.getAttribute("user");
+        List<QuakeInfo> quakeInfos = null;
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
-            return ResponseUtils.returnOK(quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
-                    Integer.valueOf(start), Integer.valueOf(count)));
+            quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
+                    Integer.valueOf(start), Integer.valueOf(count));
         } else {
-            return ResponseUtils.returnOK(quakeInfoService.getAllByCount(Integer.valueOf(start),
-                    Integer.valueOf(count)));
+            quakeInfos = quakeInfoService.getAllByCount(Integer.valueOf(start),
+                    Integer.valueOf(count));
         }
+        List<Map<String, Object>> result = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for ( QuakeInfo quakeInfo : quakeInfos ) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", quakeInfo.getId());
+            map.put("title", quakeInfo.getTitle());
+            map.put("jumpTo", quakeInfo.getJumpTo());
+            map.put("type", quakeInfo.getType());
+            map.put("description", quakeInfo.getDescription());
+            map.put("createTime", format.format(quakeInfo.getCreateTime()));
+            map.put("publishTime", format.format(quakeInfo.getPublishTime()));
+            map.put("verifyTime", format.format(quakeInfo.getVerifyTime()));
+            if ( quakeInfo.getStatus() == 0 ) {
+                map.put("status", "已删除");
+            }
+            else if (quakeInfo.getStatus() == 1) {
+                map.put("status", "已审核");
+            }
+            else if (quakeInfo.getStatus() == 2) {
+                map.put("status", "未审核");
+            }
+            else {
+                map.put("status", "无法识别");
+            }
+            map.put("manager", userService.getById(quakeInfo.getManager()).getUsername());
+            result.add(map);
+        }
+        return ResponseUtils.returnOK(result);
     }
 
     @RequestMapping(value = "getByDate", produces = Constant.WebConstant.JSON_FORMAT)
