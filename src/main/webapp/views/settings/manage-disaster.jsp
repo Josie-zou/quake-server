@@ -114,21 +114,19 @@
         <script>
             $(function() {
                 $("[name='addfilter']").click(function() {
-                    var filterinfo = document.getElementById('filterinfo');
-                    var filter = filterinfo.lastElementChild;
-                    var f = filter.cloneNode(true);
-                    f.setAttribute('count',parseInt(f.getAttribute('count'))+1);
-                    filterinfo.appendChild(f);
+                    var f = $("#filterinfo div:first");
+                    q = f.clone();
+                    q.find("input").attr("value", "");
+                    q.attr("count", parseInt(q.attr("count"))+1);
+                    $("#filterinfo").append(q.prop('outerHTML'));
                 });
             });
             $(function() {
                 $("[name='minufilter']").click(function() {
-                    var filterinfo = document.getElementById('filterinfo');
-                    if ( filterinfo.childElementCount == 1 ) {
-                    }
-                    else {
-                        var filter = filterinfo.lastElementChild;
-                        filterinfo.removeChild(filter);
+                    var o = $("#filterinfo");
+                    var f = $("#filterinfo").find("div[name]:last");
+                    if (o.children().length > 1 ) {
+                        f.remove();
                     }
                 });
             });
