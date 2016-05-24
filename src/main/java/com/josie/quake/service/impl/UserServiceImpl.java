@@ -85,4 +85,19 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public void deleteUser(int id) {
+        userDao.delete(id);
+    }
+
+    @Override
+    public List<User> getall() {
+        return userDao.getall();
+    }
+
+    @Override
+    public List<User> getAllLowerPrivilege(int start, int count, int privilege) {
+        return userDao.getAllLowerPrivilege(start, count, privilege);
+    }
+
 }

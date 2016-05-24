@@ -21,34 +21,6 @@
         <%@include file="../header.jsp"%>
         <%@include file="../system.jsp"%>
         <%@include file="../navbar.jsp"%>
-        <%
-            User user = (User) session.getAttribute("user");
-            if (user.getPrivilege() == User.Privilege.Common.toInt()) {
-        %>
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6">
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h3>Permission Denied<a class="anchorjs-link" href="#"><span class="anchorjs-icon"></span></a></h3>
-                    <br />
-                    <div class="row">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-8" align="center">
-                            <h3>您没有权限进行审核管理</h3>
-                            <p>&nbsp;</p>
-                        </div>
-                        <div class="col-lg-2"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3"></div>
-        </div>
-        <%
-            }
-            else {
-                %>
-
         <div class="row" align="center">
             <button id="examine-start" type="button" onclick="fun(1)" class="btn btn-info btn-lg">开启审核</button>
             <button id="examine-stop" type="button" onclick="fun(0)" class="btn btn-warning btn-lg">关闭审核</button>
@@ -131,7 +103,6 @@
             </div>
             <div class="col-md-1"></div>
         </div>
-        <br/><br/><br/>
         <script>
             var nowPage = 0, param = 2;
             var flag = false;
@@ -337,9 +308,6 @@
             }
         </script>
         <script src="<%=request.getContextPath()%>/resource/js/menu.js"></script>
-        <%
-            }
-        %>
         <%@include file="../footer.jsp"%>
     </body>
 </html>

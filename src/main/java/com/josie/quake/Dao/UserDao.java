@@ -2,10 +2,7 @@ package com.josie.quake.dao;
 
 import com.josie.quake.dao.annotation.DataSourceQuake;
 import com.josie.quake.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -95,7 +92,9 @@ public interface UserDao {
             + " work_place = #{workPlace}, "
             + " positon = #{positon}, "
             + " qq = #{qq}, "
-            + " last_update_time = now()")
+            + " privilege = #{privilege}, "
+            + " last_update_time = now()"
+            + " where id = #{id}")
     public void updateUser(
             User user);
 
@@ -138,4 +137,30 @@ public interface UserDao {
             + " where mail_adress = #{email} ")
     public User getByEmail(
             @Param("email") String account);
+
+    @Delete(
+            "delete from "
+            + TABLE
+            + " where id = #{id}"
+    )
+    public void delete(@Param("id") int id);
+
+    @Select(
+            "select "
+            + COL_ALL
+            + " from "
+            + TABLE
+    )
+    public List<User> getall();
+
+    @Select(
+            "select "
+            + COL_ALL
+            + " from "
+            + TABLE
+            + " where privilege < #{privilege}"
+    )
+    public List<User> getAllLowerPrivilege(@Param("start") int start,
+                         @Param("count") int count,
+                         @Param("privilege") int privilege);
 }

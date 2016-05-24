@@ -30,4 +30,10 @@ public interface UserService {
     public void updateUser(Integer id, String username, String mailAdress, String qq, String phoneNumber, String positon, String workPlace);
 
     public User getByAccount(String account);
+
+    public void deleteUser(int id);
+
+    public List<User> getall();
+
+    public List<User> getAllLowerPrivilege(int start, int count, int privilege);
 }

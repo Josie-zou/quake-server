@@ -10,6 +10,7 @@ public enum ErrorInfo {
     UNKNOWN_ERROR(100000, "出了点问题,我们正在处理"),
     UNKNOWN_MAIL(100002, "不合法的邮箱地址"),
     UNKNOWN_PHONENUMBER(100003,"不合法的手机号码"),
+    CANNOT_FIND_USER(100004, "找不到该用户"),
 
 
     //没有权限

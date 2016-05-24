@@ -35,6 +35,11 @@ public class IndexController {
         return "charts";
     }
 
+    @RequestMapping(value = "error")
+    public String error() {
+        return "error";
+    }
+
     @RequestMapping(value = "/settings/setting")
     public String setting() {
         return "settings/setting";
@@ -65,5 +70,7 @@ public class IndexController {
     public String user() {
         return "settings/manage-user";
     }
+
+
 
 }

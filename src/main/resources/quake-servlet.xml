@@ -12,8 +12,16 @@
             <beans:mapping path="/**"/>
             <beans:exclude-mapping path="/index"/>
             <beans:exclude-mapping path="/resource/**"/>
-            <beans:exclude-mapping path="/api/**"/>
+            <beans:exclude-mapping path="/api/login"/>
+            <beans:exclude-mapping path="/api/logout"/>
+            <beans:exclude-mapping path="/api/signup"/>
+            <beans:exclude-mapping path="/error"/>
             <bean class="com.josie.quake.interceptor.AuthInterceptor"/>
+        </beans:interceptor>
+        <beans:interceptor>
+            <beans:mapping path="/settings/**"/>
+            <beans:exclude-mapping path="/settings/setting"/>
+            <bean class="com.josie.quake.interceptor.PrivilegeInterceptor"/>
         </beans:interceptor>
     </beans:interceptors>
 
