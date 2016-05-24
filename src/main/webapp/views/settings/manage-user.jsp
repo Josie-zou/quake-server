@@ -64,7 +64,7 @@
             createTable();
             function createTable() {
                 $.ajax({
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=user",
+                    url: "<%=request.getContextPath()%>/api/?operate=user",
                     type: "GET",
                     dataType: "json",
                     success: function(data) {

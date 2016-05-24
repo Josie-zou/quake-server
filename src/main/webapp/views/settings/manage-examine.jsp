@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.josie.quake.model.User" %><%--
   Created by IntelliJ IDEA.
   User: glacier
   Date: 15-5-25
@@ -21,6 +21,34 @@
         <%@include file="../header.jsp"%>
         <%@include file="../system.jsp"%>
         <%@include file="../navbar.jsp"%>
+        <%
+            User user = (User) session.getAttribute("user");
+            if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+        %>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3>Permission Denied<a class="anchorjs-link" href="#"><span class="anchorjs-icon"></span></a></h3>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-8" align="center">
+                            <h3>您没有权限进行审核管理</h3>
+                            <p>&nbsp;</p>
+                        </div>
+                        <div class="col-lg-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+        <%
+            }
+            else {
+                %>
+
         <div class="row" align="center">
             <button id="examine-start" type="button" onclick="fun(1)" class="btn btn-info btn-lg">开启审核</button>
             <button id="examine-stop" type="button" onclick="fun(0)" class="btn btn-warning btn-lg">关闭审核</button>
@@ -51,11 +79,10 @@
             <div class="col-md-10">
                 <div id="filters-div">
                     <form id="examine-ok" method="post">
+                        <input type="text" name="status" hidden value="" id="inputStatus">
                         <div class="row">
-                            <button type="button" class="btn btn-info" onclick="showAll()">全部</button>
-                            <button type="button" class="btn btn-warning" onclick="showDis()">灾情获取</button>
-                            <button type="button" class="btn btn-success" onclick="showPub()">舆情监控</button>
-                            <a type="button" class="btn btn-default" href="<%=request.getContextPath()%>/settings/manage-whitelist.jsp#tips">白名单</a>
+                            <button type="button" class="btn btn-success" onclick="showUnexamine()">未审核</button>
+                            <button type="button" class="btn btn-warning" onclick="showDeleted()">已删除</button>
                         </div>
                         <br />
                         <div class="row">
@@ -64,22 +91,39 @@
                                 <tr>
                                     <th class="text-center" width="30px"></th>
                                     <th class="text-center" width="50px">序号</th>
-                                    <th class="text-center" width="60px">来源</th>
-                                    <th class="text-center" width="110px">获取时间</th>
-                                    <th class="text-center" width="110px">发布时间</th>
-                                    <th class="text-center" width="170px">标题</th>
-                                    <th class="text-center" width="320px">摘要</th>
-                                    <th class="text-center" width="80px">状态</th>
+                                    <th class="text-center" width="50px">来源</th>
+                                    <th class="text-center" width="100px">获取时间</th>
+                                    <th class="text-center" width="100px">发布时间</th>
+                                    <th class="text-center" width="280px">标题</th>
+                                    <th class="text-center" width="140px">关键字</th>
+                                    <th class="text-center" width="60px">状态</th>
                                     <th class="text-center" width="80px">设置</th>
                                 </tr>
                                 </thead>
                                 <tbody id="filters-tbody"></tbody>
                             </table>
                         </div>
+                        <div class="text-center">
+                            <nav>
+                                <ul class="pagination">
+                                    <li id="pagePre">
+                                        <a href="#" aria-label="Previous" onclick="getPage(-1)">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#" id="pageNum">1</a></li>
+                                    <li id="pageNext">
+                                        <a href="#" aria-label="Next" onclick="getPage(1)">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                         <div class="row">
                             <div class="col-lg-12" align="right">
-                                <input class="btn btn-danger btn-lg" onclick="submit_form(0)" type="button" value="加入白名单" data-toggle="tooltip2" data-placement="top" title="审核淘汰" />
-                                <input class="btn btn-info btn-lg" onclick="submit_form(1)" type="button" value="记录提交" data-toggle="tooltip2"  data-placement="top" title="审核通过" />
+                                <input class="btn btn-danger btn-lg" onclick="submit_form(0)" type="button" value="删除记录" data-toggle="tooltip2" data-placement="top" title="审核淘汰" />
+                                <input class="btn btn-info btn-lg" onclick="submit_form(1)" type="button" value="通过审核" data-toggle="tooltip2"  data-placement="top" title="审核通过" />
                             </div>
                         </div>
                     </form>
@@ -87,214 +131,192 @@
             </div>
             <div class="col-md-1"></div>
         </div>
-        <div class="modal fade" id="show-div" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
-                                class="sr-only">Close</span></button>
-                        <h4>详细信息</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="alert alert-info alert-dismissible" role="alert">
-                                    <h3 align="center">源文件信息<a class="anchorjs-link" href="#"><span
-                                            class="anchorjs-icon"></span></a></h3>
-                                    <br/>
-
-                                    <div class="row">
-                                        <%--<div class="col-lg-2"></div>--%>
-                                        <div class="col-lg-12" align="center">
-                                            <p id="filter-source" hidden></p>
-                                            <iframe width="100%" height="100%" src="" id="filter-iframe" hidden></iframe>
-                                        </div>
-                                        <%--<div class="col-lg-2"></div>--%>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <button type="button" class="btn btn-info" id="filter-type"></button>
-                            </div>
-                            <div id="filter-rule-div" class="col-lg-9" align="right">
-                                <button id="filter-rule" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                        data-placement="bottom" title="">规则
-                                </button>
-                                <button id="filter-patten" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                        data-placement="bottom" title="">正则
-                                </button>
-                                <button id="filter-unexist" type="button" class="btn btn-warning" data-toggle="tooltip"
-                                        data-placement="bottom" title="">不含关键字
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <br/><br/><br/>
         <script>
-            createTable();
-            function createTable() {
+            var nowPage = 0, param = 2;
+            var flag = false;
+            function getPage(start) {
+                var link = "<%=request.getContextPath()%>/api/quake/getall?count=10&status="+param+"&start=";
+                if (start == -1) {
+                    if (nowPage == 0) {
+                        nowPage = 0;
+                        return;
+                    }
+                    else {
+                        nowPage --;
+                    }
+                }
+                else if (start == 1) {
+                    if (flag) {
+                        return;
+                    }
+                    nowPage++;
+                }
+                else if (start == 0) {
+                    nowPage = 0;
+                }
+                if (nowPage == 0) {
+                    $("#pagePre").attr("class", "disabled");
+                }
+                else {
+                    $("#pagePre").removeAttr("class");
+                }
+
+                $("#pageNum").text(nowPage+1);
                 $.ajax({
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=examine",
+                    url: link + (nowPage*10),
                     type: "GET",
                     dataType: "json",
                     success: function(data) {
-                        var objson = eval(data);
-                        for ( var i = 0; i < objson.length; i ++ ) {
-                            var row = document.createElement("tr");
-                            row.setAttribute("id", objson[i].id);
-                            row.setAttribute("class", "text-info");
-                            row.setAttribute("status", objson[i].type);
-                            var col0 = document.createElement("th");
-                            col0.setAttribute("class", "text-center");
-                            var select = document.createElement("input");
-                            select.setAttribute("type", "checkbox");
-                            select.setAttribute("name", "check");
-                            select.setAttribute("value", objson[i].id);
-                            col0.appendChild(select);
-                            row.appendChild(col0);
-
-
-                            var num = document.createElement("td");
-                            num.setAttribute("class", "text-center");
-                            var span_num = document.createElement("span");
-                            span_num.innerHTML = objson[i].number;
-                            num.appendChild(span_num);
-                            row.appendChild(num);
-
-                            var origin = document.createElement("td");
-                            origin.setAttribute("class", "text-center");
-                            var span0 = document.createElement("span");
-                            span0.setAttribute("class", "label label-default");
-                            span0.innerHTML = objson[i].origin;
-                            origin.appendChild(span0);
-                            row.appendChild(origin);
-
-                            var crawldate = document.createElement("th");
-                            crawldate.setAttribute("class", "text-center");
-                            crawldate.appendChild(document.createTextNode(objson[i].crawldate));
-                            row.appendChild(crawldate);
-                            var pagedate = document.createElement("th");
-                            pagedate.setAttribute("class", "text-center");
-                            pagedate.appendChild(document.createTextNode(objson[i].pagedate));
-                            row.appendChild(pagedate);
-
-                            var title = document.createElement("th");
-                            title.setAttribute("class", "text-center");
-                            title.setAttribute("style", "overflow-x:hidden;");
-                            title.appendChild(document.createTextNode(objson[i].title));
-                            row.appendChild(title);
-                            var source = document.createElement("th");
-                            source.setAttribute("class", "text-center");
-                            var ele = document.createElement("p");
-                            ele.innerHTML = objson[i].source;
-                            source.appendChild(ele);
-                            row.appendChild(source);
-
-                            var status = document.createElement("th");
-                            status.setAttribute("class", "text-center");
-                            var span_status = document.createElement("span");
-                            span_status.setAttribute("class", "label label-info");
-                            span_status.innerHTML = objson[i].status;
-                            status.appendChild(span_status);
-                            row.appendChild(status);
-
-                            var check = document.createElement("th");
-                            check.setAttribute("class", "text-center");
-                            var button1 = document.createElement("a");
-                            button1.setAttribute("class", "btn btn-success");
-                            button1.setAttribute("target", "_blank");
-                            button1.setAttribute("href", objson[i].url);
-                            button1.innerHTML = "查看";
-                            check.appendChild(button1);
-                            row.appendChild(check);
-                            document.getElementById("filters-tbody").appendChild(row);
+                        var jsonObj = eval(data);
+                        if (jsonObj.code == 0) {
+                            if (jsonObj.data.length != 10) {
+                                $("#pageNext").attr("class", "disabled");
+                                flag = true;
+                            }
+                            else {
+                                $("#pageNext").removeAttr("class");
+                                flag = false;
+                            }
+                            createTable(jsonObj.data);
+                        }
+                        else {
+                            alert(jsonObj.msg);
                         }
                     }
                 });
+            }
+            getPage(0);
+
+            function createTable(data) {
+                document.getElementById("filters-tbody").innerHTML = "";
+                for (var i = 0; i < data.length; i ++) {
+                    var row = document.createElement("tr");
+                    row.setAttribute("class", "text-info");
+
+                    var col_select = document.createElement("th");
+                    col_select.setAttribute("class", "text-center");
+                    var select = document.createElement("input");
+                    select.setAttribute("type", "checkbox");
+                    select.setAttribute("name", "id");
+                    select.setAttribute("value", data[i].id);
+                    col_select.appendChild(select);
+                    row.appendChild(col_select);
+
+                    var num = document.createElement("td");
+                    num.setAttribute("class", "text-center");
+                    num.innerHTML = data[i].id;
+                    row.appendChild(num);
+
+                    var type = document.createElement("td");
+                    type.setAttribute("class", "text-center");
+                    var span = document.createElement("span");
+                    span.setAttribute("class", "label label-default");
+                    span.innerHTML = data[i].type;
+                    type.appendChild(span);
+                    row.appendChild(type);
+
+                    var createTime = document.createElement("th");
+                    createTime.setAttribute("class", "text-center");
+                    createTime.innerHTML = data[i].createTime;
+                    row.appendChild(createTime);
+
+                    var pageTime = document.createElement("th");
+                    pageTime.setAttribute("class", "text-center");
+                    pageTime.innerHTML = data[i].publishTime;
+                    row.appendChild(pageTime);
+
+                    var title = document.createElement("th");
+                    title.setAttribute("class", "text-center");
+                    title.setAttribute("style", "overflow-x:hidden;");
+                    title.appendChild(document.createTextNode(data[i].title));
+                    row.appendChild(title);
+
+                    var desc = document.createElement("th");
+                    desc.setAttribute("class", "text-center");
+                    desc.innerHTML = data[i].description;
+                    row.appendChild(desc);
+
+                    var status = document.createElement("th");
+                    status.setAttribute("class", "text-center");
+                    var span_status = document.createElement("span");
+                    span_status.setAttribute("class", "label label-info");
+                    span_status.innerHTML = data[i].status;
+                    status.appendChild(span_status);
+                    row.appendChild(status);
+
+                    var check = document.createElement("th");
+                    check.setAttribute("class", "text-center");
+                    var button = document.createElement("a");
+                    button.setAttribute("class", "btn btn-success");
+                    button.setAttribute("target", "_blank");
+                    button.setAttribute("href", data[i].jumpTo);
+                    button.innerHTML = "查看";
+                    check.appendChild(button);
+                    row.appendChild(check);
+                    document.getElementById("filters-tbody").appendChild(row);
+                }
+            }
+
+            function showDeleted() {
+                param = 3;
+                getPage(0)
+            }
+            function showUnexamine() {
+                param = 2;
+                getPage(0);
             }
         </script>
         <script>
-            $(function () {
-                $('[data-toggle="tooltip2"]').tooltip();
-            });
-            function show(value) {
+            function fun(value) {
+
                 $.ajax({
                     type: "get",
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=spiderinfo",
-                    data: "id=" + value,
-                    dataType: "json",
+                    url: "<%=request.getContextPath()%>/api/examine/status",
                     success: function (msg) {    //msg是后台调用action时，你传过来的参数
-                        var objson = eval(msg);
-                        if ( objson.source != null ) {
-                            $("#filter-iframe").attr("hidden","");
-                            $("#filter-source").removeAttr("hidden");
-                            $("#filter-source").html(objson.source);
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            if (jsonObj.data == false && value == 0) {
+                                alert("系统已经关闭");
+                            }
+                            else if (jsonObj.data == true && value == 1) {
+                                alert("系统已经开启");
+                            }
+                            else {
+                                var urlVal;
+                                if (value == 1) {
+                                    urlVal = "<%=request.getContextPath()%>/api/examine/start";
+                                }
+                                else if (value == 0) {
+                                    urlVal = "<%=request.getContextPath()%>/api/examine/shutdown";
+                                }
+                                $.ajax({
+                                    type: "get",
+                                    url: urlVal,
+                                    success: function (msg) {    //msg是后台调用action时，你传过来的参数
+                                        var jsonObj = eval(msg);
+                                        if (jsonObj.code == 0) {
+                                            alert("操作成功");
+                                        }
+                                        else {
+                                            alert(jsonObj.msg);
+                                        }
+                                    }
+                                });
+                            }
                         }
                         else {
-                            $("#filter-source").attr("hidden", "");
-                            $("#filter-iframe").removeAttr("hidden");
-                            $("#filter-iframe").attr("src", objson.url);
-                        }
-                        if (objson.type == "disaster") {
-                            $("#filter-type").html("信息类型: 灾情获取");
-                            $("#filter-patten").remove();
-                            $("#filter-unexist").remove();
-                            $("#filter-rule").attr("title", objson.rule);
-                        } else if (objson.type == "public") {
-                            $("#filter-type").html("信息类型: 舆情监测");
-                            $("#filter-rule").attr("title", objson.name);
-                            $("#filter-patten").attr("title", objson.matcher);
-                            $("#filter-unexist").attr("title", objson.unexist);
-                        }
-                        $(function () {
-                            $('[data-toggle="tooltip"]').tooltip();
-                        });
-                        $("#show-div").modal("toggle");
-                    }
-                });
-            }
-
-            function showAll() {
-                $("tr[status]").attr("style", "display:");
-            }
-            function showDis() {
-                $("tr[status='0']").attr("style", "display:");
-                $("tr[status='1']").attr("style", "display:none");
-            }
-            function showPub() {
-                $("tr[status='1']").attr("style", "display:");
-                $("tr[status='0']").attr("style", "display:none");
-            }
-
-            function fun(value) {
-                $.ajax({
-                    type: "get",
-                    url: "<%=request.getContextPath()%>/SettingServlet?operate=switch",
-                    data: "value=" + value,
-                    success: function (msg) {    //msg是后台调用action时，你传过来的参数
-                        if (msg == "examine start") {
-                            alert("审核模块已被开启 普通用户只能浏览通过审核的内容");
-                        } else if (msg == "examine stop") {
-                            alert("审核模块已经关闭 普通用户可以浏览所有获取到的数据");
-                        } else if (msg == "permission denied") {
-                            alert("您没有权限进行此操作");
-                        } else if (msg == "wrong stop") {
-                            alert("审核模块已经处于关闭状态");
-                        } else if (msg == "wrong start") {
-                            alert("审核模块已经处于开启状态");
+                            alert(jsonObj.msg);
                         }
                     }
                 });
+
+
             }
 
-            function submit_form(op) {
-                var ajax_url = "<%=request.getContextPath()%>/SettingServlet?operate=examine-ok&type=" + op;
+            function submit_form(status) {
+                $("#inputStatus").attr("value", status);
+                var ajax_url = "<%=request.getContextPath()%>/api/quake/doExamine";
                 var ajax_type = $("#examine-ok").attr('method');
                 var ajax_data = $("#examine-ok").serialize();
                 $.ajax({
@@ -302,21 +324,22 @@
                     url: ajax_url,
                     data: ajax_data,
                     success: function(msg) {    //msg是后台调用action时，你传过来的参数
-                        if ( msg == "wrong" ) {
-                            alert("审核出现异常");
+                        var jsonObj = eval(msg);
+                        if (jsonObj.code == 0) {
+                            alert("提交成功");
                             location.reload();
-                        } else if ( msg == "success" ) {
-                            alert("操作成功");
-                            location.reload();
-                        } else if ( msg == "permission denied" ) {
-                            alert("您没有权限进行此操作");
                         }
-                        location.reload();
+                        else {
+                            alert(jsonObj.msg);
+                        }
                     }
                 });
             }
         </script>
         <script src="<%=request.getContextPath()%>/resource/js/menu.js"></script>
+        <%
+            }
+        %>
         <%@include file="../footer.jsp"%>
     </body>
 </html>

@@ -2,10 +2,12 @@ package com.josie.quake.controller;
 
 import com.alibaba.druid.util.StringUtils;
 import com.josie.quake.commons.Constant;
+import com.josie.quake.commons.utils.ErrorInfo;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.QuakeInfo;
 import com.josie.quake.model.User;
 import com.josie.quake.service.QuakeInfoService;
+import com.josie.quake.service.SystemConfigService;
 import com.josie.quake.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,9 @@ public class QuakeInfoController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SystemConfigService configService;
+
     @RequestMapping(value = "getall", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getInfo(
@@ -42,8 +47,15 @@ public class QuakeInfoController {
         User user = (User)session.getAttribute("user");
         List<QuakeInfo> quakeInfos = null;
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
-            quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
-                    Integer.valueOf(start), Integer.valueOf(count));
+            if (configService.isExamineStart()) {
+                quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
+                        Integer.valueOf(start), Integer.valueOf(count));
+            }
+            else {
+                quakeInfos = quakeInfoService.getAllByCount(Integer.valueOf(start),
+                        Integer.valueOf(count));
+            }
+
         } else {
             if (StringUtils.equalsIgnoreCase(status, "1") ) {
                 quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Enable,
@@ -51,6 +63,10 @@ public class QuakeInfoController {
             }
             else if (StringUtils.equalsIgnoreCase(status, "2")) {
                 quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.UNVERIFY,
+                        Integer.valueOf(start), Integer.valueOf(count));
+            }
+            else if (StringUtils.equalsIgnoreCase(status, "3")) {
+                quakeInfos = quakeInfoService.getAllByStatusByCount(QuakeInfo.Status.Disable,
                         Integer.valueOf(start), Integer.valueOf(count));
             }
             else {
@@ -113,6 +129,29 @@ public class QuakeInfoController {
             return ResponseUtils.returnOK(quakeInfoService.getAllByTypeByStatus(QuakeInfo.Status.Enable));
         } else {
             return ResponseUtils.returnOK(quakeInfoService.getAllByType());
+        }
+    }
+
+    @RequestMapping(value = "doExamine", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String doExamine(@RequestParam("id") String[] quakeIDs,
+                            @RequestParam("status") String status,
+                            HttpSession session) {
+        User user = (User)session.getAttribute("user");
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
+        } else {
+            boolean flag = true;
+            for ( String quakeID : quakeIDs ) {
+                System.out.println("before: " + flag);
+                System.out.println("quakeID: " + quakeID + "\tstatus: " + status);
+                flag = flag && (quakeInfoService.updateStatus(Integer.valueOf(quakeID), Integer.valueOf(status)) > 0);
+                System.out.println("after: " + flag);
+            }
+            if (flag) {
+                return ResponseUtils.returnOK();
+            }
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_ERROR);
         }
     }
 }

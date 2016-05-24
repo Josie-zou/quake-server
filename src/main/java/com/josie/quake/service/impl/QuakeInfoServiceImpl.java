@@ -101,5 +101,10 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
         return newResult;
     }
 
+    @Override
+    public int updateStatus(int id, int status) {
+        quakeInfoDao.updateStatus(id, status);
+        return 1;
+    }
 
 }

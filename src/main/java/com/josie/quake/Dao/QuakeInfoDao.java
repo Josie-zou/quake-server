@@ -4,6 +4,7 @@ import com.josie.quake.dao.annotation.DataSourceQuake;
 import com.josie.quake.model.QuakeInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ public interface QuakeInfoDao {
             + COL_ALL
             + " from "
             + TABLE
+            + " where status > 0 "
             + " limit #{start}, #{count}")
     public List<QuakeInfo> getAll(
             @Param("start") int start,
@@ -84,4 +86,13 @@ public interface QuakeInfoDao {
             + TABLE
             + " group by type ")
     public List<Map<String,? extends Object>> getAllByType();
+
+    @Update(""
+            + " update "
+            + TABLE
+            + " set status = #{status}"
+            + " where id = #{id} ")
+    public void updateStatus(
+            @Param("id") int id,
+            @Param("status") int status);
 }
