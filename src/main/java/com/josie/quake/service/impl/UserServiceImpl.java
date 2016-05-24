@@ -100,4 +100,10 @@ public class UserServiceImpl implements UserService {
         return userDao.getAllLowerPrivilege(start, count, privilege);
     }
 
+    @Override
+    public void changePassword(int id, String newPassword) {
+        userDao.changePassword(id, newPassword);
+        return;
+    }
+
 }

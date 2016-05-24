@@ -2,6 +2,7 @@ package com.josie.quake.controller;
 
 import com.josie.quake.commons.Constant;
 import com.josie.quake.commons.utils.ErrorInfo;
+import com.josie.quake.commons.utils.RegexUtils;
 import com.josie.quake.commons.utils.ResponseUtils;
 import com.josie.quake.model.User;
 import com.josie.quake.service.UserService;
@@ -31,7 +32,7 @@ public class UserController {
             @RequestParam("start") int start,
             @RequestParam("count") int count,
             HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {
@@ -42,7 +43,7 @@ public class UserController {
     @RequestMapping(value = "getall", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getAll(HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {
@@ -55,7 +56,7 @@ public class UserController {
     public String getAllByStatus(@RequestParam("start") int start,
                                  @RequestParam("count") int count,
                                  HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {
@@ -81,7 +82,13 @@ public class UserController {
             @RequestParam(value = "qq", required = false, defaultValue = "") String qq,
             @RequestParam(value = "workPlace", required = false, defaultValue = "") String workPlace,
             HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
+        if (!RegexUtils.isEmail(mailAdress)) {
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_MAIL);
+        }
+        if (!RegexUtils.isPhoneNumber(phoneNumber)) {
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_PHONENUMBER);
+        }
         userService.updateUser(user.getId(), username, mailAdress, qq, phoneNumber, positon, workPlace);
         user.setUsername(username);
         user.setMailAdress(mailAdress);
@@ -93,12 +100,27 @@ public class UserController {
         return ResponseUtils.returnOK();
     }
 
+    @ResponseBody
+    @RequestMapping(value = "changePassword", produces = Constant.WebConstant.JSON_FORMAT)
+    public String changePassword(
+            @RequestParam("password") String password,
+            @RequestParam("newPassword") String newPassword,
+            HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (!user.getPassword().equals(password)) {
+            return ResponseUtils.returnError(ErrorInfo.PASSWORD_ERROR);
+        }
+        userService.changePassword(user.getId(), newPassword);
+        session.removeAttribute("user");
+        return ResponseUtils.returnOK();
+    }
+
     @RequestMapping(value = "addPrivilege", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String updatePrivilege(
             @RequestParam("userId") int userId,
             HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         } else {
@@ -111,24 +133,21 @@ public class UserController {
     @ResponseBody
     public String delete(@RequestParam("id") String id,
                          HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         User delUser = userService.getById(Integer.parseInt(id));
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         }
         if (delUser == null) {
             return ResponseUtils.returnError(ErrorInfo.CANNOT_FIND_USER);
-        }
-        else {
+        } else {
             if (user.getPrivilege() >= User.Privilege.Admin.toInt() && delUser.getPrivilege() == User.Privilege.Common.toInt()) {
                 userService.deleteUser(delUser.getId());
                 return ResponseUtils.returnOK();
-            }
-            else if (user.getPrivilege() == User.Privilege.Root.toInt() && delUser.getPrivilege() < User.Privilege.Root.toInt()) {
+            } else if (user.getPrivilege() == User.Privilege.Root.toInt() && delUser.getPrivilege() < User.Privilege.Root.toInt()) {
                 userService.deleteUser(delUser.getId());
                 return ResponseUtils.returnOK();
-            }
-            else {
+            } else {
                 return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
             }
         }
@@ -145,8 +164,7 @@ public class UserController {
         }
         if (manager == null) {
             return ResponseUtils.returnError(ErrorInfo.CANNOT_FIND_USER);
-        }
-        else {
+        } else {
             manager.setPrivilege(User.Privilege.Admin.toInt());
             userService.updateUser(manager);
             return ResponseUtils.returnOK();
@@ -155,17 +173,16 @@ public class UserController {
 
     @RequestMapping(value = "delManager", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String delManager(@RequestParam("id")String id,
+    public String delManager(@RequestParam("id") String id,
                              HttpSession session) {
-        User user = (User)session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         User manager = userService.getById(Integer.parseInt(id));
         if (user.getPrivilege() != User.Privilege.Root.toInt()) {
             return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
         }
         if (manager == null) {
             return ResponseUtils.returnError(ErrorInfo.CANNOT_FIND_USER);
-        }
-        else {
+        } else {
             manager.setPrivilege(User.Privilege.Common.toInt());
             userService.updateUser(manager);
             return ResponseUtils.returnOK();

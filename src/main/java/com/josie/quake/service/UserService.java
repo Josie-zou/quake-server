@@ -36,4 +36,6 @@ public interface UserService {
     public List<User> getall();
 
     public List<User> getAllLowerPrivilege(int start, int count, int privilege);
+
+    public void changePassword(int id, String newPassword);
 }

@@ -140,27 +140,39 @@ public interface UserDao {
 
     @Delete(
             "delete from "
-            + TABLE
-            + " where id = #{id}"
+                    + TABLE
+                    + " where id = #{id}"
     )
     public void delete(@Param("id") int id);
 
     @Select(
             "select "
-            + COL_ALL
-            + " from "
-            + TABLE
+                    + COL_ALL
+                    + " from "
+                    + TABLE
     )
     public List<User> getall();
 
     @Select(
             "select "
-            + COL_ALL
-            + " from "
-            + TABLE
-            + " where privilege < #{privilege}"
+                    + COL_ALL
+                    + " from "
+                    + TABLE
+                    + " where privilege < #{privilege}"
     )
-    public List<User> getAllLowerPrivilege(@Param("start") int start,
-                         @Param("count") int count,
-                         @Param("privilege") int privilege);
+    public List<User> getAllLowerPrivilege(
+            @Param("start") int start,
+            @Param("count") int count,
+            @Param("privilege") int privilege);
+
+    @Update(""
+            + " update "
+            + TABLE
+            + " set "
+            + " password = #{password} "
+            + " where "
+            + " id = #{id}")
+    public void changePassword(
+            @Param("id") int id,
+            @Param("password") String newPassword);
 }
