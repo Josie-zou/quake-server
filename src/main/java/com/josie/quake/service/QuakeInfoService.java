@@ -36,5 +36,5 @@ public interface QuakeInfoService {
 
     public List<Map<String, ? extends Object>> getAllByType();
 
-    public int updateStatus(int id, int status);
+    public int updateStatus(int uid, int id, int status);
 }

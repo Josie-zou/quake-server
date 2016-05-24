@@ -132,10 +132,9 @@ public class QuakeInfoController {
         }
     }
 
-    @RequestMapping(value = "doExamine", produces = Constant.WebConstant.JSON_FORMAT)
+    @RequestMapping(value = "examine/pass", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
-    public String doExamine(@RequestParam("id") String[] quakeIDs,
-                            @RequestParam("status") String status,
+    public String passExamine(@RequestParam("id") String[] quakeIDs,
                             HttpSession session) {
         User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
@@ -143,10 +142,26 @@ public class QuakeInfoController {
         } else {
             boolean flag = true;
             for ( String quakeID : quakeIDs ) {
-                System.out.println("before: " + flag);
-                System.out.println("quakeID: " + quakeID + "\tstatus: " + status);
-                flag = flag && (quakeInfoService.updateStatus(Integer.valueOf(quakeID), Integer.valueOf(status)) > 0);
-                System.out.println("after: " + flag);
+                flag = flag && (quakeInfoService.updateStatus(user.getId(), Integer.valueOf(quakeID), 1) > 0);
+            }
+            if (flag) {
+                return ResponseUtils.returnOK();
+            }
+            return ResponseUtils.returnError(ErrorInfo.UNKNOWN_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "examine/delete", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String delExamine(@RequestParam("id") String[] quakeIDs,
+                            HttpSession session) {
+        User user = (User)session.getAttribute("user");
+        if (user.getPrivilege() == User.Privilege.Common.toInt()) {
+            return ResponseUtils.returnError(ErrorInfo.NO_PRIVILEGE);
+        } else {
+            boolean flag = true;
+            for ( String quakeID : quakeIDs ) {
+                flag = flag && (quakeInfoService.updateStatus(user.getId(), Integer.valueOf(quakeID), 0) > 0);
             }
             if (flag) {
                 return ResponseUtils.returnOK();

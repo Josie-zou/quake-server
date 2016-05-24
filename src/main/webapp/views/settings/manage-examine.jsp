@@ -51,7 +51,6 @@
             <div class="col-md-10">
                 <div id="filters-div">
                     <form id="examine-ok" method="post">
-                        <input type="text" name="status" hidden value="" id="inputStatus">
                         <div class="row">
                             <button type="button" class="btn btn-success" onclick="showUnexamine()">未审核</button>
                             <button type="button" class="btn btn-warning" onclick="showDeleted()">已删除</button>
@@ -286,8 +285,14 @@
             }
 
             function submit_form(status) {
-                $("#inputStatus").attr("value", status);
-                var ajax_url = "<%=request.getContextPath()%>/api/quake/doExamine";
+                var urlVal = "<%=request.getContextPath()%>/api/quake/examine/";
+                if (status == 0) {
+                    urlVal = urlVal + "delete";
+                }
+                else if (status == 1) {
+                    urlVal = urlVal + "pass";
+                }
+                var ajax_url = urlVal;
                 var ajax_type = $("#examine-ok").attr('method');
                 var ajax_data = $("#examine-ok").serialize();
                 $.ajax({

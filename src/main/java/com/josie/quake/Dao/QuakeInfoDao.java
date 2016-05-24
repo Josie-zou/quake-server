@@ -90,9 +90,12 @@ public interface QuakeInfoDao {
     @Update(""
             + " update "
             + TABLE
-            + " set status = #{status}"
+            + " set status = #{status},"
+            + " manager = #{uid},"
+            + " verify_time = now()"
             + " where id = #{id} ")
     public void updateStatus(
+            @Param("uid") int uid,
             @Param("id") int id,
             @Param("status") int status);
 }
