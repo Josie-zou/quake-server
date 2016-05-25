@@ -42,6 +42,8 @@ public interface FilterWhiteListDao {
             + " select "
             + COL_ALL
             + " from "
-            + TABLE)
+            + TABLE
+            + " where "
+            + " status = 1")
     public List<FilterWhiteList> getall();
 }

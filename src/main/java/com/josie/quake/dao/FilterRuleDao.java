@@ -53,7 +53,7 @@ public interface FilterRuleDao {
             + " set rule = #{rule}, "
             + " operator = #{operator} "
             + " where id = #{id} ")
-    void update(
+    public void update(
             @Param("id") Integer id,
             @Param("rule") String rule,
             @Param("operator") Integer operator);
