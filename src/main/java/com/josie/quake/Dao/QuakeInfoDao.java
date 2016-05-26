@@ -46,8 +46,8 @@ public interface QuakeInfoDao {
             + " DATE_FORMAT(create_time, '%Y-%m-%d') as date, count(id) as count"
             + " from "
             + TABLE
-            + " where create_time <= #{endDate} "
-            + " and create_time >= #{startDate} "
+            + " where DATE_FORMAT(create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') "
+            + " and DATE_FORMAT(create_time, '%Y-%m-%d') >= DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
             + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
             + " order by DATE_FORMAT(create_time, '%Y-%m-%d')")
     public List<Map<String, Object>> getAllByDate(
@@ -60,10 +60,10 @@ public interface QuakeInfoDao {
             + " from "
             + TABLE
             + " where status = #{status} "
-            + " and create_time <= #{endDate} "
-            + " and create_time >= #{startDate} "
+            + " and DATE_FORMAT(create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') "
+            + " and DATE_FORMAT(create_time, '%Y-%m-%d') >= DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
             + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
-            + " order by create_time")
+            + " order by DATE_FORMAT(create_time, '%Y-%m-%d')")
     public List<Map<String, Object>> getAllByStatusByDate(
             @Param("status") int status,
             @Param("startDate") Date startDate,
