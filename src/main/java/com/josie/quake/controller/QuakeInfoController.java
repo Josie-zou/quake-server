@@ -109,7 +109,7 @@ public class QuakeInfoController {
     public String getByDate(HttpSession session) throws ParseException {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, -15);
+        calendar.add(Calendar.DATE, -7);
         Date startDate = calendar.getTime();
         Date lastDate = new Date();
 
