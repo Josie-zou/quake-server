@@ -75,17 +75,23 @@ public interface QuakeInfoDao {
             + " from "
             + TABLE
             + " where status = #{status} "
-            + " group by type ")
+            + " group by type "
+            + " order by rand()"
+    )
     public List<Map<String,? extends Object>> getAllByTypeByStatus(
             @Param("status") int status);
+
 
     @Select(""
             + " select "
             + " count(id) as count, type "
             + " from "
             + TABLE
-            + " group by type ")
+            + " group by type "
+            + " order by rand()"
+    )
     public List<Map<String,? extends Object>> getAllByType();
+
 
     @Update(""
             + " update "
@@ -93,17 +99,19 @@ public interface QuakeInfoDao {
             + " set status = #{status},"
             + " manager = #{uid},"
             + " verify_time = now()"
-            + " where id = #{id} ")
+            + " where id = #{id} "
+    )
     public void updateStatus(
             @Param("uid") int uid,
             @Param("id") int id,
             @Param("status") int status);
 
+
     @Select(
             "select count(id) as count, description as keywords"
             + " from "
             + TABLE
-            + " group by description"
+            + " group by description order by rand()"
     )
     public List<Map<String, Object>> getByKeywords();
 
@@ -112,9 +120,31 @@ public interface QuakeInfoDao {
             + " from "
             + TABLE
             + " where create_time != publish_time"
-            + " group by DATE_FORMAT(publish_time, '%Y-%m-%d');"
+            + " group by DATE_FORMAT(publish_time, '%Y-%m-%d')"
+            + " order by rand()"
     )
     public List<Map<String, Object>> getPublishTime();
 
-//    public List<Map<>>
+    @Select(
+            "select count(*) as count "
+            + " from "
+            + TABLE
+    )
+    public Integer getQuakeInfoCount();
+
+    @Select(
+            "select count(*) as count "
+            + " from "
+            + TABLE
+            + " where DATE_FORMAT(create_time, '%Y-%m-%d') = DATE_FORMAT(#{date}, '%Y-%m-%d')"
+    )
+    public Integer getQuakeInfoCountByDate(@Param("date") Date date);
+
+    @Select(
+            "select count(*) as count "
+            + " from "
+            + TABLE
+            + " where status = #{status}"
+    )
+    public Integer getQuakeInfoCountByStatus(@Param("status") int status);
 }

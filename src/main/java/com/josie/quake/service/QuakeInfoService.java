@@ -42,4 +42,6 @@ public interface QuakeInfoService {
 
     public List<Map<String, Object>> getPublishTime();
 
+    public Map<String, Object> getGatherInfo();
+
 }

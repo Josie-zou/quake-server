@@ -45,9 +45,10 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">x</span>
                 </button>
-                <%--<h4><%=chart.today()%></h4>--%>
-                <%--<p>系统收录信息：<%=chart.infoCountAll()%>条</p>--%>
-                <%--<p>今日获取数据：<%=chart.infoCountToday()%>条（灾情：<%=chart.infoCountTodayDis()%>条 / 舆情：<%=chart.infoCountTodayPub()%>条）</p>--%>
+                <h4 id="today"></h4>
+                <p id="total"></p>
+                <p id="today_count"></p>
+                <p id="yes_count"></p>
             </div>
         </div>
         <div class="row">
@@ -55,8 +56,9 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">x</span>
                 </button>
-                <%--<p>已通过审核信息：<%=chart.infoCountPass()%>条</p>--%>
-                <%--<p>未通过审核信息：<%=chart.infoCountNoPass()%>条</p>--%>
+                <p id="enable"></p>
+                <p id="disable"></p>
+                <p id="unverify"></p>
             </div>
         </div>
     </div>
@@ -89,6 +91,26 @@
     });
 </script>
 <script>
+    $(function () {
+        $.ajax({
+            url: "<%=request.getContextPath()%>/api/quake/getGatherInfo",
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                var jsonObj = eval(data);
+                if (jsonObj.code == 0) {
+                    var charts = jsonObj.data;
+                    $("#today").text(charts.today);
+                    $("#total").text("系统收录信息：" + charts.total + " 条");
+                    $("#yes_count").text("昨日获取数据：" + charts.yes_count + " 条");
+                    $("#today_count").text("今日获取数据：" + charts.today_count + " 条");
+                    $("#enable").text("已通过审核信息：" + charts.enable + "条");
+                    $("#disable").text("未通过审核信息：" + charts.disable + "条");
+                    $("#unverify").text("未审核信息：" + charts.unverify + "条");
+                }
+            }
+        });
+    });
     $(function () {
         $.ajax({
             url: "<%=request.getContextPath()%>/api/quake/getByType",
@@ -259,9 +281,8 @@
                     var axis = new Array();
                     var datas = new Array();
                     for (var i = 0; i < charts.length; i ++) {
-                        var j = charts.length-1-i;
-                        axis[i] = charts[j].date;
-                        datas[i] = parseInt(charts[j].count);
+                        axis[i] = charts[i].date;
+                        datas[i] = parseInt(charts[i].count);
                     }
                     $('#zhe1').highcharts({
                         title: {

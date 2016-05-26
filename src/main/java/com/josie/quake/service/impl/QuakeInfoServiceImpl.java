@@ -121,4 +121,22 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
         return quakeInfoDao.getPublishTime();
     }
 
+    @Override
+    public Map<String, Object> getGatherInfo() {
+        Map<String, Object> result = new HashMap<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        result.put("today", format.format(date));
+        result.put("total", quakeInfoDao.getQuakeInfoCount());
+        result.put("today_count", quakeInfoDao.getQuakeInfoCountByDate(date));
+        result.put("yes_count", quakeInfoDao.getQuakeInfoCountByDate(calendar.getTime()));
+        result.put("enable", quakeInfoDao.getQuakeInfoCountByStatus(QuakeInfo.Status.Enable.toInt()));
+        result.put("unverify", quakeInfoDao.getQuakeInfoCountByStatus(QuakeInfo.Status.UNVERIFY.toInt()));
+        result.put("disable", quakeInfoDao.getQuakeInfoCountByStatus(QuakeInfo.Status.Disable.toInt()));
+        return result;
+    }
+
 }

@@ -147,7 +147,7 @@ public class QuakeInfoController {
     @RequestMapping(value = "getGatherInfo", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String getGatherInfo(HttpSession session) {
-        return ResponseUtils.returnOK(quakeInfoService.getPublishTime());
+        return ResponseUtils.returnOK(quakeInfoService.getGatherInfo());
     }
 
     @RequestMapping(value = "examine/pass", produces = Constant.WebConstant.JSON_FORMAT)
