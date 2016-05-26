@@ -49,7 +49,7 @@ public interface QuakeInfoDao {
             + " where create_time <= #{endDate} "
             + " and create_time >= #{startDate} "
             + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
-            + " order by create_time")
+            + " order by DATE_FORMAT(create_time, '%Y-%m-%d')")
     public List<Map<String, Object>> getAllByDate(
             @Param("startDate") Date startDate,
             @Param("endDate") Date lastDate);
