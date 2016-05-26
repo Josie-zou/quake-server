@@ -132,6 +132,24 @@ public class QuakeInfoController {
         }
     }
 
+    @RequestMapping(value = "getByKeywords", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getByKeywords(HttpSession session) {
+        return ResponseUtils.returnOK(quakeInfoService.getByKeywords());
+    }
+
+    @RequestMapping(value = "getByPublishTime", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getByPublishTime(HttpSession session) {
+        return ResponseUtils.returnOK(quakeInfoService.getPublishTime());
+    }
+
+    @RequestMapping(value = "getGatherInfo", produces = Constant.WebConstant.JSON_FORMAT)
+    @ResponseBody
+    public String getGatherInfo(HttpSession session) {
+        return ResponseUtils.returnOK(quakeInfoService.getPublishTime());
+    }
+
     @RequestMapping(value = "examine/pass", produces = Constant.WebConstant.JSON_FORMAT)
     @ResponseBody
     public String passExamine(@RequestParam("id") String[] quakeIDs,

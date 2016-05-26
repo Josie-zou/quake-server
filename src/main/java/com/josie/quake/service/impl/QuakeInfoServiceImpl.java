@@ -45,7 +45,7 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
             Date startDate,
             Date lastDate) throws ParseException {
         List<Map<String, Object>> result = quakeInfoDao.getAllByStatusByDate(enable.toInt(), startDate, lastDate);
-        result = convertResult(result, startDate, 15);
+        result = convertResult(result, startDate, 7);
         return result;
     }
 
@@ -54,7 +54,7 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
             Date startDate,
             Date lastDate) throws ParseException {
         List<Map<String, Object>> result = quakeInfoDao.getAllByDate(startDate, lastDate);
-        result = convertResult(result, startDate, 15);
+        result = convertResult(result, startDate, 7);
         return result;
     }
 
@@ -73,7 +73,11 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
             Date start,
             int days) throws ParseException {
         List<Map<String, Object>> newResult = new ArrayList<>();
-        int k = 0;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+        calendar.add(Calendar.DATE, 1);
+        start = calendar.getTime();
+        int k = 1;
         while (k <= days) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Map<String, Object> newMap = new HashMap<>();
@@ -91,7 +95,7 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
             newMap.put("date", dateString);
             newMap.put("count", count);
             newResult.add(newMap);
-            Calendar calendar = Calendar.getInstance();
+            calendar = Calendar.getInstance();
             calendar.setTime(start);
             calendar.add(Calendar.DATE, 1);
             k++;
@@ -105,6 +109,16 @@ public class QuakeInfoServiceImpl implements QuakeInfoService {
     public int updateStatus(int uid, int id, int status) {
         quakeInfoDao.updateStatus(uid, id, status);
         return 1;
+    }
+
+    @Override
+    public List<Map<String, Object>> getByKeywords() {
+        return quakeInfoDao.getByKeywords();
+    }
+
+    @Override
+    public List<Map<String, Object>> getPublishTime() {
+        return quakeInfoDao.getPublishTime();
     }
 
 }

@@ -47,7 +47,7 @@ public interface QuakeInfoDao {
             + " from "
             + TABLE
             + " where DATE_FORMAT(create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') "
-            + " and DATE_FORMAT(create_time, '%Y-%m-%d') >= DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
+            + " and DATE_FORMAT(create_time, '%Y-%m-%d') > DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
             + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
             + " order by DATE_FORMAT(create_time, '%Y-%m-%d')")
     public List<Map<String, Object>> getAllByDate(
@@ -61,7 +61,7 @@ public interface QuakeInfoDao {
             + TABLE
             + " where status = #{status} "
             + " and DATE_FORMAT(create_time, '%Y-%m-%d') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d') "
-            + " and DATE_FORMAT(create_time, '%Y-%m-%d') >= DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
+            + " and DATE_FORMAT(create_time, '%Y-%m-%d') > DATE_FORMAT(#{startDate}, '%Y-%m-%d') "
             + " group by DATE_FORMAT(create_time, '%Y-%m-%d')"
             + " order by DATE_FORMAT(create_time, '%Y-%m-%d')")
     public List<Map<String, Object>> getAllByStatusByDate(
@@ -98,4 +98,23 @@ public interface QuakeInfoDao {
             @Param("uid") int uid,
             @Param("id") int id,
             @Param("status") int status);
+
+    @Select(
+            "select count(id) as count, description as keywords"
+            + " from "
+            + TABLE
+            + " group by description"
+    )
+    public List<Map<String, Object>> getByKeywords();
+
+    @Select(
+            "select count(id) as count, DATE_FORMAT(publish_time, '%Y-%m-%d') as publish_time"
+            + " from "
+            + TABLE
+            + " where create_time != publish_time"
+            + " group by DATE_FORMAT(publish_time, '%Y-%m-%d');"
+    )
+    public List<Map<String, Object>> getPublishTime();
+
+//    public List<Map<>>
 }
