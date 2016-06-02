@@ -38,4 +38,8 @@ public interface UserService {
     public List<User> getAllLowerPrivilege(int start, int count, int privilege);
 
     public void changePassword(int id, String newPassword);
+
+    public boolean isDuplicateEmail(String email);
+
+    public boolean isDuplicatePhone(String phone);
 }

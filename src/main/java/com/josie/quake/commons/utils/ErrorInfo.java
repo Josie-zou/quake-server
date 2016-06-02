@@ -11,6 +11,8 @@ public enum ErrorInfo {
     UNKNOWN_MAIL(100002, "不合法的邮箱地址"),
     UNKNOWN_PHONENUMBER(100003,"不合法的手机号码"),
     CANNOT_FIND_USER(100004, "找不到该用户"),
+    DUPLICATE_EMAIL(100005, "重复的邮箱地址"),
+    DUPLICATE_PHONE(100006, "重复的手机号"),
 
 
     //没有权限

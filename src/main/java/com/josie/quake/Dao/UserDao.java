@@ -175,4 +175,5 @@ public interface UserDao {
     public void changePassword(
             @Param("id") int id,
             @Param("password") String newPassword);
+
 }

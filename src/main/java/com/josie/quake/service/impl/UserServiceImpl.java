@@ -106,4 +106,20 @@ public class UserServiceImpl implements UserService {
         return;
     }
 
+
+    @Override
+    public boolean isDuplicateEmail(String email) {
+        if ( userDao.getByEmail(email) != null ) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isDuplicatePhone(String phone) {
+        if (userDao.getByMobile(phone) != null) {
+            return true;
+        }
+        return false;
+    }
 }

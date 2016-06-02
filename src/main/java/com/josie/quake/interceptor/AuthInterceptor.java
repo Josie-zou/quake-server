@@ -19,14 +19,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         User authUser = new User();
         authUser.setUsername("test");
         authUser.setPrivilege(User.Privilege.Root.toInt());
-        session.setAttribute("user", authUser);
+//        session.setAttribute("user", authUser);
         User user = (User)session.getAttribute("user");
         if ( user != null ) {
             return true;
         }
         else {
             System.out.println("还没登录呢");
-            httpServletResponse.sendRedirect("/index");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/index");
         }
         return false;
     }

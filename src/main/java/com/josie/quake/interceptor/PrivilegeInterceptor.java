@@ -18,7 +18,7 @@ public class PrivilegeInterceptor implements HandlerInterceptor {
         HttpSession session = httpServletRequest.getSession();
         User user = (User)session.getAttribute("user");
         if (user.getPrivilege() == User.Privilege.Common.toInt()) {
-            httpServletResponse.sendRedirect("/error");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/error");
         }
         return true;
     }
