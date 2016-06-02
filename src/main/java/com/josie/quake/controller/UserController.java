@@ -89,10 +89,10 @@ public class UserController {
         if (!RegexUtils.isPhoneNumber(phoneNumber)) {
             return ResponseUtils.returnError(ErrorInfo.UNKNOWN_PHONENUMBER);
         }
-        if ( userService.isDuplicateEmail(mailAdress) ) {
+        if ( !user.getMailAdress().equals(mailAdress) && userService.isDuplicateEmail(mailAdress) ) {
             return ResponseUtils.returnError(ErrorInfo.DUPLICATE_EMAIL);
         }
-        if ( userService.isDuplicatePhone(phoneNumber)) {
+        if ( !user.getPhoneNumber().equals(phoneNumber) && userService.isDuplicatePhone(phoneNumber)) {
             return ResponseUtils.returnError(ErrorInfo.DUPLICATE_PHONE);
         }
         userService.updateUser(user.getId(), username, mailAdress, qq, phoneNumber, positon, workPlace);
